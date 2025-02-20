@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Local
-import 'package:japanese_word_bank/classes/EnEntry.dart';
+import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 import 'package:japanese_word_bank/functions/RomParser.dart';
 import 'package:japanese_word_bank/functions/translate.dart';
 

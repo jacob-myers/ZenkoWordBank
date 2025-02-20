@@ -7,7 +7,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 // Local
-import 'package:japanese_word_bank/classes/EnEntry.dart';
+import 'package:japanese_word_bank/classes/en_ja_pair.dart';
+import 'package:japanese_word_bank/classes/sense.dart';
 
 class DatabaseHelper {
   double en_pri_min = 0, en_pri_max = 10;
