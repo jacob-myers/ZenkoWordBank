@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:collection';
-import 'dart:io';
-import 'package:japanese_word_bank/classes/EnEntry.dart';
 import 'package:path/path.dart';
 import 'package:collection/collection.dart';
-import 'package:sqflite/sqflite.dart';
+
 import 'package:tuple/tuple.dart';
-import 'package:xml/xml.dart' as xml;
-import 'package:xml2json/xml2json.dart';
-import 'dart:convert';
-import 'package:japanese_word_bank/data/JMdict_e_tester.dart' as jm;
+import 'package:sqflite/sqflite.dart';
 import 'package:string_similarity/string_similarity.dart';
+
+// Local
+import 'package:japanese_word_bank/classes/EnEntry.dart';
 
 class DatabaseHelper {
   double en_pri_min = 0, en_pri_max = 10;
