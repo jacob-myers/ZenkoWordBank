@@ -36,6 +36,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # For copying db from assets to device storage.
+  path_provider: ^2.1.5
   # xml parser
   xml: ^6.5.0
   # xml to json
@@ -104,3 +106,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+  assets:
+    - assets/jmedict.db

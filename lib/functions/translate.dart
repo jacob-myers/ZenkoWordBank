@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'package:path/path.dart';
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 
 import 'package:tuple/tuple.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:string_similarity/string_similarity.dart';
+import 'package:path_provider/path_provider.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
@@ -28,11 +30,23 @@ class DatabaseHelper {
   Future<Database> get database async => _database ??= await _initDatabase();
 
   Future<Database> _initDatabase() async {
-    String mydbDirectory = join(await getDatabasesPath(), "jmedict_k.db");
-    return await openDatabase(
-      mydbDirectory,
-      version: 1,
-    );
+
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/jmedict.db';
+
+    if (!await databaseExists(path)) {
+      await _copyDatabaseFromAssets(path);
+    }
+    return await openDatabase(path);
+  }
+
+  Future<void> _copyDatabaseFromAssets(String path) async {
+    // Load the database from assets
+    final byteData = await rootBundle.load('assets/jmedict.db');
+    final bytes = byteData.buffer.asUint8List();
+
+    // Write the bytes to the document directory
+    await File(path).writeAsBytes(bytes);
   }
 
   // Takes a string en_term and returns a list of JaEntry matches.
