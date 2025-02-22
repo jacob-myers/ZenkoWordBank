@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 import 'package:japanese_word_bank/classes/sense.dart';
 
-class DatabaseHelper {
+class DictDatabaseHelper {
   double en_pri_min = 0, en_pri_max = 10;
   double ja_pri_min = 0, ja_pri_max = 10;
   double str_sim_min = 0, str_sim_max = 1;
@@ -23,8 +23,8 @@ class DatabaseHelper {
   double str_sim_weight = 3;
   double freq_weight = 2;
 
-  DatabaseHelper._privateConstructor();
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  DictDatabaseHelper._privateConstructor();
+  static final DictDatabaseHelper instance = DictDatabaseHelper._privateConstructor();
 
   static Database? _database;
   Future<Database> get database async => _database ??= await _initDatabase();
