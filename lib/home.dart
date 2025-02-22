@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
-import 'package:japanese_word_bank/functions/RomParser.dart';
+import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/functions/translate.dart';
+import 'package:japanese_word_bank/widgets/pages/page_home.dart';
+import 'package:japanese_word_bank/widgets/pages/page_translate.dart';
+import 'package:japanese_word_bank/widgets/pages/page_words.dart';
+import 'package:japanese_word_bank/widgets/term_card.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
@@ -17,68 +21,87 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String hiriText = "konnichiha";
-  String hiriMeaning = "Hello";
-  String kataText = "amerika";
-  String kataMeaning = "America";
+  PageController pc = PageController(initialPage: 1);
+
+  int _selectedIndex = 1;
+  void _onNavbarItemTapped (int index) {
+    setState(() {
+      pc.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.ease);
+      //_selectedIndex = index;
+    });
+  }
+
+  void _onPageChange (int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    String hiri = RomParser.toHirigana(hiriText);
-    String kata = RomParser.toKatakana(kataText);
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-          child: Column(
+        child: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (OverscrollIndicatorNotification overscroll) {
+            overscroll.disallowIndicator();
+            return false;
+          },
+          child: PageView(
+            controller: pc,
             children: [
-              Expanded(
-                child: Container(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 50,),
-                      Text("$hiriText -> Hirigana", style: TextStyle(fontSize: 25)),
-                      Text("(Meaning - $hiriMeaning)", style: TextStyle(fontSize: 15)),
-                      Text(hiri, style: TextStyle(fontSize: 30)),
-                      SizedBox(height: 20,),
-                      Text("$kataText -> Katakana", style: TextStyle(fontSize: 25)),
-                      Text("(Meaning - $kataMeaning)", style: TextStyle(fontSize: 15)),
-                      Text(kata, style: TextStyle(fontSize: 30)),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: JWBColors.txtEntryBG
-                ),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 15),
-                child: TextField(
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                  maxLines: 1,
-                  decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
+              PageWords(),
+              PageHome(),
+              PageTranslate()
+            ],
+            onPageChanged: _onPageChange,
+          )
+        )
+      ),
+
+      bottomNavigationBar: Theme(
+        data: ThemeData(
+          splashColor: Colors.transparent
+        ),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(0, 3, 0, 3),
+          decoration: BoxDecoration(
+              color: JWBColors.txtEntryBG
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 250,
+                child: BottomNavigationBar(
+                  elevation: 0,
+                  currentIndex: _selectedIndex,
+                  onTap: _onNavbarItemTapped,
+                  items: const <BottomNavigationBarItem> [
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.storage),
+                        label: "Words"
                     ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.home),
+                        label: "Home"
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.translate),
+                        label: "Translate"
                     ),
-                    hintStyle: TextStyle(
-                      color: JWBColors.txtEntryUnfocused
-                    ),
-                    hintText: "English or Romaji..."
-                  ),
+                  ],
+                  backgroundColor: JWBColors.txtEntryBG,
+                  selectedItemColor: JWBColors.navbarItemSelected,
+                  unselectedItemColor: JWBColors.navbarItemUnselected,
+                  selectedFontSize: 15,
                 ),
               ),
             ],
           )
-      ),
+        ),
+      )
 
       /*
       floatingActionButton: FloatingActionButton(
