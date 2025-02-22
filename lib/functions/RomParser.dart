@@ -1,5 +1,3 @@
-import 'package:translator/translator.dart';
-
 const HEPBURNTAB_H = """ぁ      xa      あ      a      ぃ      xi      い      i      ぅ      xu
 う      u      う゛      vu      う゛ぁ      va      う゛ぃ      vi      う゛ぇ      ve
 う゛ぉ      vo      ぇ      xe      え      e      ぉ      xo      お      o
@@ -259,12 +257,4 @@ void main() async {
 
   print("\n$hiriText:\n ${RomParser.toHirigana(hiriText)}");
   print("$kataText:\n ${RomParser.toKatakana(kataText)}");
-
-  final translator = GoogleTranslator();
-  String input = "Hello";
-
-  //Translation jap = await translator.translate(input, to: "ja");
-  //print(jap.text);
-
-  //jap = await translator.translate(sourceText)
 }
