@@ -7,6 +7,8 @@ import 'package:japanese_word_bank/classes/term_entry.dart';
 // Styles
 import 'package:japanese_word_bank/themes.dart';
 
+import '../word_text_entry.dart';
+
 class PageWords extends StatefulWidget {
   const PageWords({super.key});
 
@@ -17,7 +19,11 @@ class PageWords extends StatefulWidget {
 class _PageWords extends State<PageWords> {
   List<TermEntry> entries = [
     TermEntry(en_term: "Hello", reading: "こんにちは"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ")
+    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
+    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
+    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
+    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
+    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
   ];
 
   @override
@@ -36,27 +42,49 @@ class _PageWords extends State<PageWords> {
               color: JWBColors.txtEntryBG
           ),
           padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-          child: TextField(
-            style: TextStyle(
-              fontSize: 20,
-            ),
-            maxLines: 1,
-            decoration: InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                      ),
+                      hintStyle: TextStyle(
+                          color: JWBColors.txtEntryUnfocused
+                      ),
+                      hintText: "English or Romaji..."
+                  ),
                 ),
-                border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
-                ),
-                hintStyle: TextStyle(
-                    color: JWBColors.txtEntryUnfocused
-                ),
-                hintText: "English or Romaji..."
-            ),
-          ),
+              ),
+
+
+              IconButton(
+                padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+                icon: Icon(Icons.add_box_rounded, size: 40,),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog.fullscreen(
+                        child: NewWordDialogue()
+                      );
+                    }
+                  );
+                },
+              )
+            ],
+          )
         ),
       ],
     );

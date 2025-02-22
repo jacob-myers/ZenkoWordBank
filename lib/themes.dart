@@ -25,6 +25,10 @@ class JWBColors {
   
   static const navbarItemSelected = Color(0xFFFFFFFF);
   static const navbarItemUnselected = Color(0xFFAEAEAE);
+
+  static const newTermButtonConfirm = Color(0xFFA82E3E);
+  static const newTermButtonCancel = Color(0xFF575757);
+  static const newTermDropdownBackground = Color(0xFF3E3E3E);
 }
 
 class JWBGradients {
@@ -52,5 +56,30 @@ class JWBTextStyles {
   static const termRomaji = TextStyle(
     color: JWBColors.entryTextMain,
     fontSize: 14
+  );
+
+  static const newTermEnglish = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 22
+  );
+  static const newTermJap = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 26
+  );
+  static const newTermReading = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 22
+  );
+  static const termJapMainDropdown = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 22
+  );
+  static const termJapMainDropdownDefinition = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 16
+  );
+  static const newTermButton = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 16
   );
 }
