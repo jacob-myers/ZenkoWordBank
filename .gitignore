@@ -51,3 +51,6 @@ app.*.map.json
 
 # Trash
 /lib/trash
+
+# Art
+/art_files
