@@ -7,6 +7,7 @@ import 'package:japanese_word_bank/classes/term_entry.dart';
 // Styles
 import 'package:japanese_word_bank/themes.dart';
 
+import '../../persistence.dart';
 import '../word_text_entry.dart';
 
 class PageWords extends StatefulWidget {
@@ -26,15 +27,33 @@ class _PageWords extends State<PageWords> {
     TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
   ];
 
+  _superSetState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-            child: ListView(
-                children: List.generate(entries.length, (i) {
-                  return TermCard(term: entries[i]);
-                })
+            child: FutureBuilder(
+                future: WordsDatabaseHelper.instance.getTerms(),
+                builder: (BuildContext context, AsyncSnapshot<List<TermEntry>> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: Text("Loading..."));
+                  }
+
+                  return ListView(
+                      children: List.generate(snapshot.data!.length, (i) {
+                        return TermCard(
+                          term: snapshot.data![i],
+                          onDelete: () {
+                            setState(() {});
+                          },
+                        );
+                      })
+                  );
+                }
             )
         ),
         Container(
@@ -77,7 +96,9 @@ class _PageWords extends State<PageWords> {
                     context: context,
                     builder: (context) {
                       return Dialog.fullscreen(
-                        child: NewWordDialogue()
+                        child: NewWordDialogue(
+                          onClose: _superSetState,
+                        )
                       );
                     }
                   );

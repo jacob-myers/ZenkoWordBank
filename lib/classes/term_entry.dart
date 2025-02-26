@@ -1,41 +1,38 @@
 import 'package:kana_kit/kana_kit.dart';
 
 class TermEntry {
+  int? id;
   String en_term;
   String? k_term;
-  String _ja_reading;
-  late String _romaji;
+  String reading;
 
   final _kanaKit = const KanaKit();
 
-  TermEntry({required this.en_term, String? this.k_term, required String reading}) : _ja_reading = reading {
-    _romaji = _kanaKit.toRomaji(_ja_reading);
+  TermEntry({this.id, required this.en_term, String? this.k_term, required this.reading});
+
+  factory TermEntry.fromMap(Map<String, dynamic> json) {
+    return TermEntry(
+      id: json["id"],
+      en_term: json["en_term"],
+      k_term: json["kanji"],
+      reading: json["reading"],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'en_term': en_term,
+      'kanji': k_term,
+      'reading': reading,
+    };
   }
 
   String get ja_term {
-    return k_term ?? _ja_reading;
-  }
-
-  set reading (String kana) {
-    _ja_reading = kana;
-    _romaji = _kanaKit.toRomaji(_ja_reading);
-  }
-
-  String get reading {
-    return _ja_reading;
-  }
-
-  set romaji_h (String rom) {
-    _romaji = rom;
-    _ja_reading = _kanaKit.toHiragana(_romaji);
-  }
-
-  set romaji_k (String rom) {
-    _romaji = rom;
-    _ja_reading = _kanaKit.toKatakana(_romaji);
+    return k_term ?? reading;
   }
 
   String get romaji {
-    return _romaji;
+    return _kanaKit.toRomaji(reading);
   }
 }

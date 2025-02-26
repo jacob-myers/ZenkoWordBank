@@ -3,13 +3,18 @@ import 'sense.dart';
 class EnJaPair {
   int pri;
   int? freq_group;
-  String ja_value;
+  String? k_term;
+  String reading;
   List<Sense> en_senses;
 
-  EnJaPair({required this.pri, required this.ja_value, required this.en_senses, this.freq_group});
+  EnJaPair({required this.pri, this.k_term, required this.reading, required this.en_senses, this.freq_group});
 
-  factory EnJaPair.fromUnparsedSenses(int pri, String ja_value, String unpSenses) {
-    return EnJaPair(pri: pri, ja_value: ja_value, en_senses: unpSenses.split('~').map((sense) => Sense.fromUnparsed(sense)).toList());
+  factory EnJaPair.fromUnparsedSenses(int pri, String? k_term, String reading, String unpSenses) {
+    return EnJaPair(pri: pri, k_term: k_term, reading: reading, en_senses: unpSenses.split('~').map((sense) => Sense.fromUnparsed(sense)).toList());
+  }
+
+  String get ja_term {
+    return k_term ?? reading;
   }
 
   bool isDirectMatch(String en_term) {
@@ -24,8 +29,12 @@ class EnJaPair {
     return false;
   }
 
+  String get en_term {
+    return en_senses[0].toString();
+  }
+
   @override
   String toString() {
-    return "$ja_value ($freq_group, $pri): $en_senses";
+    return "$k_term ($freq_group, $pri): $en_senses";
   }
 }

@@ -49,13 +49,20 @@ class DictDatabaseHelper {
     await File(path).writeAsBytes(bytes);
   }
 
+  // Get the top n results of translating.
+  Future<List<EnJaPair>> translateNResults(String en_term, int n) async {
+    List<EnJaPair> results = await translate(en_term);
+    n = n > results.length ? results.length : n;
+    return results.sublist(0, n);
+  }
+
   // Takes a string en_term and returns a list of JaEntry matches.
   Future<List<EnJaPair>> translate(String en_term) async {
     // Joins JA_TERMS and EN_TERMS where the enIDs are equal and en value contains en_term.
     // i.e Finds english matches and their related japanese elements.
     Database db = await instance.database;
     List<dynamic> res = await db.rawQuery('''
-      SELECT ja.pri as ja_pri, ja.value as ja_value, en.value as en_value, ja.freqGroup as freq_group
+      SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
       FROM JA_TERMS ja
       JOIN EN_TERMS en
       ON ja.enID = en.enID
@@ -66,7 +73,8 @@ class DictDatabaseHelper {
     List<EnJaPair> matches = res.map((e) {
       return EnJaPair(
         pri: e['ja_pri'],
-        ja_value: e['ja_value'],
+        k_term: e['reading'] == null ? null : e['ja_value'],
+        reading: e['reading'] ?? e['ja_value'],
         // Gets senses containing en_term then maps them to become Sense objects.
         en_senses: sensesContainingX(e['en_value'].toLowerCase(), en_term.toLowerCase()).map((e) {
           return Sense.fromUnparsed(e);

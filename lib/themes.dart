@@ -21,6 +21,7 @@ class JWBColors {
 
   static const entryBackground = Color(0xFFA82E3E);
   static const entryTextMain = Color(0xFFFFFFFF);
+  static const txtFaded = Color(0xFFA1A1A1);
   static const entryButton = Color(0xFFFFFFFF);
   
   static const navbarItemSelected = Color(0xFFFFFFFF);
@@ -41,6 +42,11 @@ class JWBGradients {
 }
 
 class JWBTextStyles {
+  static const bodyText = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 14,
+  );
+
   static const termEnglish = TextStyle(
     color: JWBColors.entryTextMain,
     fontSize: 22,
@@ -69,6 +75,10 @@ class JWBTextStyles {
   static const newTermReading = TextStyle(
     color: JWBColors.entryTextMain,
     fontSize: 22
+  );
+  static const newTermRomaji = TextStyle(
+      color: JWBColors.txtFaded,
+      fontSize: 18
   );
   static const termJapMainDropdown = TextStyle(
     color: JWBColors.entryTextMain,

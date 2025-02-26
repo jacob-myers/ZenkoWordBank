@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/term_entry.dart';
+import 'package:japanese_word_bank/persistence.dart';
 import 'package:japanese_word_bank/themes.dart';
+import 'package:japanese_word_bank/widgets/delete_confirmation.dart';
 
 class TermCard extends StatefulWidget {
+  Function onDelete;
   final TermEntry term;
 
   TermCard({
     required this.term,
+    required this.onDelete,
   });
 
   @override
@@ -29,6 +33,7 @@ class _TermCard extends State<TermCard> {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Column(
@@ -44,12 +49,35 @@ class _TermCard extends State<TermCard> {
             Column(
               children: [
                 InkWell(
-                  child: Container(
-                    child: const Icon(
-                      Icons.edit,
-                      color: JWBColors.entryButton,
-                    ),
+                  child: const Icon(
+                    Icons.close,
+                    size: 35,
+                    color: JWBColors.entryButton,
                   ),
+                  onTap: () async {
+                    // TODO delete term.
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return DeleteConfirmation(
+                            delete: () async {
+                              await WordsDatabaseHelper.instance.deleteTerm(widget.term.id!);
+                              widget.onDelete();
+                            },
+                          );
+                        }
+                    );
+                  },
+                ),
+                InkWell(
+                  child: const Icon(
+                    Icons.edit,
+                    size: 28,
+                    color: JWBColors.entryButton,
+                  ),
+                  onTap: () {
+                    // TODO open word text entry with term.
+                  },
                 )
               ],
             ),
