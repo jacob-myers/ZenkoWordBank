@@ -13,6 +13,6 @@ class Sense {
   @override
   String toString() {
     //return "Priority: $pri\n${glosses.join('\n')}";
-    return "($pri) ${glosses.join(" / ")}";
+    return glosses.join(" / ");
   }
 }
