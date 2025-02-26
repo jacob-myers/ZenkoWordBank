@@ -10,12 +10,13 @@ import 'package:japanese_word_bank/persistence.dart';
 // Styles
 import 'package:japanese_word_bank/themes.dart';
 
-class NewWordDialogue extends StatefulWidget {
+class TermEditor extends StatefulWidget {
+  int dropdownCount = 10;
   Function onClose;
   TermEntry? term;
   bool isEdit;
 
-  NewWordDialogue({
+  TermEditor({
     super.key,
     required this.onClose,
     this.term,
@@ -23,10 +24,10 @@ class NewWordDialogue extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _NewWordDialogue();
+  State<StatefulWidget> createState() => _TermEditor();
 }
 
-class _NewWordDialogue extends State<NewWordDialogue> {
+class _TermEditor extends State<TermEditor> {
   final _kanaKit = const KanaKit();
   bool _autotranslate = true;
 
@@ -64,8 +65,6 @@ class _NewWordDialogue extends State<NewWordDialogue> {
   }
 
   void updateReading(EnJaPair pair) {
-    //pair.k_term == null ? _re
-    //newTerm.reading = pair.reading;
     _readingController.value = pair.k_term == null ? TextEditingValue(text: "") :
     TextEditingValue(
       text: pair.reading,
@@ -76,8 +75,7 @@ class _NewWordDialogue extends State<NewWordDialogue> {
   }
 
   void _translateFrom(String value) async {
-    ja_translations = await DictDatabaseHelper.instance.translateNResults(value, 10);
-    //newTerm.k_term = ja_translations[0].k_term;
+    ja_translations = await DictDatabaseHelper.instance.translateNResults(value, widget.dropdownCount);
     if (ja_translations.isNotEmpty) {
       updateReading(ja_translations.first);
     }
@@ -208,8 +206,6 @@ class _NewWordDialogue extends State<NewWordDialogue> {
                     )
                   ],
                 )
-                //label: "${term.ja_term}\n ${term.en_term}",
-                //style: MenuItemButton.styleFrom(textStyle: JWBTextStyles.termJapMainDropdown)
               );
             }).toList(),
             onSelected: (EnJaPair? pair) {

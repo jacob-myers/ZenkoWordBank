@@ -8,7 +8,7 @@ import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/themes.dart';
 
 import '../../persistence.dart';
-import '../word_text_entry.dart';
+import '../term_editor.dart';
 
 class PageWords extends StatefulWidget {
   const PageWords({super.key});
@@ -99,7 +99,7 @@ class _PageWords extends State<PageWords> {
                     context: context,
                     builder: (context) {
                       return Dialog.fullscreen(
-                        child: NewWordDialogue(
+                        child: TermEditor(
                           onClose: _superSetState,
                         )
                       );

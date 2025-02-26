@@ -5,7 +5,7 @@ import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/persistence.dart';
 import 'package:japanese_word_bank/themes.dart';
 import 'package:japanese_word_bank/widgets/delete_confirmation.dart';
-import 'package:japanese_word_bank/widgets/word_text_entry.dart';
+import 'package:japanese_word_bank/widgets/term_editor.dart';
 
 class TermCard extends StatefulWidget {
   Function onDelete;
@@ -83,7 +83,7 @@ class _TermCard extends State<TermCard> {
                       context: context,
                       builder: (context) {
                         return Dialog.fullscreen(
-                          child: NewWordDialogue(
+                          child: TermEditor(
                             onClose: widget.onEdit,
                             term: widget.term,
                             isEdit: true,
