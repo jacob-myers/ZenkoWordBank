@@ -43,6 +43,7 @@ app.*.map.json
 /android/app/release
 
 # Local references
+TODO.txt
 /python-romkan-ng-0.3.0
 /kakasi-2.3.6
 
