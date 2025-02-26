@@ -53,6 +53,11 @@ class WordsDatabaseHelper {
     return await db.delete('userWords', where: 'id = ?', whereArgs: [termID]);
   }
 
+  Future<int> update(TermEntry term) async {
+    Database db = await instance.database;
+    return await db.update('userWords', term.toMap(), where: 'id = ?', whereArgs: [term.id]);
+  }
+
   Future<int> truncate() async {
     Database db = await instance.database;
     return await db.delete('userWords');

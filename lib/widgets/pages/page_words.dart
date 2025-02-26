@@ -50,6 +50,9 @@ class _PageWords extends State<PageWords> {
                           onDelete: () {
                             setState(() {});
                           },
+                          onEdit: () {
+                            setState(() {});
+                          },
                         );
                       })
                   );

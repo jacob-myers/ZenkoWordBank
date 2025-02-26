@@ -12,10 +12,14 @@ import 'package:japanese_word_bank/themes.dart';
 
 class NewWordDialogue extends StatefulWidget {
   Function onClose;
+  TermEntry? term;
+  bool isEdit;
 
   NewWordDialogue({
     super.key,
-    required this.onClose
+    required this.onClose,
+    this.term,
+    this.isEdit = false,
   });
 
   @override
@@ -23,21 +27,13 @@ class NewWordDialogue extends StatefulWidget {
 }
 
 class _NewWordDialogue extends State<NewWordDialogue> {
-  /*
-  List<TermEntry> ja_translations = [
-    TermEntry(en_term: "Hello", reading: "こんにちは"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Mimela splendens (metallic-green scarabaeid beetle)", k_term: "金亀子", reading: "コガネムシ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-  ];
-
-   */
   final _kanaKit = const KanaKit();
+
+  List<EnJaPair> ja_translations = [];
+
+  final TextEditingController _englishController = TextEditingController();
+  final TextEditingController _dropdownController = TextEditingController();
+  final TextEditingController _readingController = TextEditingController();
 
   String _romaji() {
     if (_readingController.value.text != "") {
@@ -66,14 +62,6 @@ class _NewWordDialogue extends State<NewWordDialogue> {
     );
   }
 
-  //TermEntry newTerm = TermEntry(en_term: "", reading: "");
-
-  List<EnJaPair> ja_translations = [];
-
-  final TextEditingController _englishController = TextEditingController();
-  final TextEditingController _dropdownController = TextEditingController();
-  final TextEditingController _readingController = TextEditingController();
-
   void updateReading(EnJaPair pair) {
     //pair.k_term == null ? _re
     //newTerm.reading = pair.reading;
@@ -93,6 +81,20 @@ class _NewWordDialogue extends State<NewWordDialogue> {
       updateReading(ja_translations.first);
     }
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.term != null) {
+      _englishController.value = TextEditingValue(text: widget.term!.en_term);
+      if (widget.term!.k_term != null) {
+        _dropdownController.value = TextEditingValue(text: widget.term!.k_term!);
+        _readingController.value = TextEditingValue(text: widget.term!.reading);
+      } else {
+        _dropdownController.value = TextEditingValue(text: widget.term!.reading);
+      }
+    }
   }
 
   @override
@@ -257,20 +259,27 @@ class _NewWordDialogue extends State<NewWordDialogue> {
               Expanded(
                 child: TextButton(
                   onPressed: () {
-                    WordsDatabaseHelper.instance.truncate();
                     TermEntry? newTerm = _newTerm();
                     if (newTerm != null) {
-                      WordsDatabaseHelper.instance.addTerm(newTerm);
+                      // if it is editing, update term.
+                      if (widget.isEdit && widget.term != null) {
+                        newTerm.id = widget.term!.id;
+                        WordsDatabaseHelper.instance.update(newTerm);
+                      }
+                      // If it is adding a new term, add term.
+                      else {
+                        WordsDatabaseHelper.instance.addTerm(newTerm);
+                      }
                       widget.onClose();
                       Navigator.pop(context);
                     }
                   },
-                  child: Text("Add"),
                   style: ButtonStyle(
                     textStyle: WidgetStatePropertyAll(JWBTextStyles.newTermButton),
                     backgroundColor: WidgetStatePropertyAll(JWBColors.newTermButtonConfirm),
                     foregroundColor: WidgetStatePropertyAll(JWBColors.entryTextMain),
                   ),
+                  child: Text( widget.isEdit ? "Confirm" : "Add"),
                 ),
               )
             ],

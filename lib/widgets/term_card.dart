@@ -5,14 +5,17 @@ import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/persistence.dart';
 import 'package:japanese_word_bank/themes.dart';
 import 'package:japanese_word_bank/widgets/delete_confirmation.dart';
+import 'package:japanese_word_bank/widgets/word_text_entry.dart';
 
 class TermCard extends StatefulWidget {
   Function onDelete;
+  Function onEdit;
   final TermEntry term;
 
   TermCard({
     required this.term,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -55,17 +58,16 @@ class _TermCard extends State<TermCard> {
                     color: JWBColors.entryButton,
                   ),
                   onTap: () async {
-                    // TODO delete term.
                     showDialog(
-                        context: context,
-                        builder: (context) {
-                          return DeleteConfirmation(
-                            delete: () async {
-                              await WordsDatabaseHelper.instance.deleteTerm(widget.term.id!);
-                              widget.onDelete();
-                            },
-                          );
-                        }
+                      context: context,
+                      builder: (context) {
+                        return DeleteConfirmation(
+                          delete: () async {
+                            await WordsDatabaseHelper.instance.deleteTerm(widget.term.id!);
+                            widget.onDelete();
+                          },
+                        );
+                      }
                     );
                   },
                 ),
@@ -77,6 +79,18 @@ class _TermCard extends State<TermCard> {
                   ),
                   onTap: () {
                     // TODO open word text entry with term.
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog.fullscreen(
+                          child: NewWordDialogue(
+                            onClose: widget.onEdit,
+                            term: widget.term,
+                            isEdit: true,
+                          )
+                        );
+                      }
+                    );
                   },
                 )
               ],
