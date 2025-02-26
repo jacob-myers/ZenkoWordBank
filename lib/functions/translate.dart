@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 
@@ -11,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 import 'package:japanese_word_bank/classes/sense.dart';
+import 'package:japanese_word_bank/classes/term_entry.dart';
 
 class DictDatabaseHelper {
   double en_pri_min = 0, en_pri_max = 10;
@@ -153,4 +155,38 @@ class DictDatabaseHelper {
     return unpSenses.split("~").where((sense) => sense.contains(x)).toList();
   }
 
+  /*
+      SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
+      FROM JA_TERMS ja
+      JOIN EN_TERMS en
+      ON ja.enID = en.enID
+      WHERE en.value LIKE '%${en_term.toLowerCase()}%'
+   */
+
+  Future<TermEntry> getRandomWord(int seed) async {
+    var r = Random(seed);
+    int rInt = r.nextInt(1000000);
+
+    Database db = await instance.database;
+    var res = await db.rawQuery('''
+      SELECT ja.value as ja_value, ja.reading as reading, en.value as en_value
+      FROM JA_TERMS ja
+      JOIN EN_TERMS en
+      ON ja.enID = en.enID
+      WHERE ja.freqGroup IS NOT NULL
+      LIMIT 1 OFFSET ($rInt % (SELECT COUNT(*) - 1 FROM JA_TERMS ja JOIN EN_TERMS en ON ja.enID = en.enID WHERE ja.freqGroup IS NOT NULL))
+    ''');
+    var first = res.first;
+    var ej = EnJaPair.fromUnparsedSenses(
+      0,
+      first['reading'] == null ? null : first['ja_value'].toString(),
+      first['reading'] == null ? first['ja_value'].toString() : first['reading'].toString(),
+      first['en_value'].toString(),
+    );
+    return TermEntry(
+      en_term: ej.en_term,
+      k_term: ej.k_term,
+      reading: ej.reading
+    );
+  }
 }

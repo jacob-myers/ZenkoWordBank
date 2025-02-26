@@ -53,6 +53,7 @@ class _PageWords extends State<PageWords> {
                           onEdit: () {
                             setState(() {});
                           },
+                          showButtons: true,
                         );
                       })
                   );

@@ -51,6 +51,14 @@ class JWBTextStyles {
     color: JWBColors.entryTextMain,
     fontSize: 14,
   );
+  static const headerText = TextStyle(
+    color: JWBColors.txtFaded,
+    fontSize: 24,
+  );
+  static const homeCardText = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 20,
+  );
 
   static const termEnglish = TextStyle(
     color: JWBColors.entryTextMain,

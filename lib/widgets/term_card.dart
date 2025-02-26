@@ -8,14 +8,17 @@ import 'package:japanese_word_bank/widgets/delete_confirmation.dart';
 import 'package:japanese_word_bank/widgets/term_editor.dart';
 
 class TermCard extends StatefulWidget {
-  Function onDelete;
-  Function onEdit;
+  Function? onDelete;
+  Function? onEdit;
   final TermEntry term;
+  bool showButtons;
 
   TermCard({
+    super.key,
     required this.term,
-    required this.onDelete,
-    required this.onEdit,
+    this.onDelete,
+    this.onEdit,
+    this.showButtons = false
   });
 
   @override
@@ -49,6 +52,8 @@ class _TermCard extends State<TermCard> {
                 ],
               ),
             ),
+            // If showButtons, place buttons.
+            !widget.showButtons ? Container() :
             Column(
               children: [
                 InkWell(
@@ -64,7 +69,9 @@ class _TermCard extends State<TermCard> {
                         return DeleteConfirmation(
                           delete: () async {
                             await WordsDatabaseHelper.instance.deleteTerm(widget.term.id!);
-                            widget.onDelete();
+                            if (widget.onDelete != null) {
+                              widget.onDelete!();
+                            }
                           },
                         );
                       }
@@ -78,13 +85,12 @@ class _TermCard extends State<TermCard> {
                     color: JWBColors.entryButton,
                   ),
                   onTap: () {
-                    // TODO open word text entry with term.
                     showDialog(
                       context: context,
                       builder: (context) {
                         return Dialog.fullscreen(
                           child: TermEditor(
-                            onClose: widget.onEdit,
+                            onClose: widget.onEdit != null ? widget.onEdit! : () {},
                             term: widget.term,
                             isEdit: true,
                           )
