@@ -20,7 +20,7 @@ For these results, If they have a Kanji writing, this is entered as the primary 
 The home screen provides a word of the day, randomly generated from common Japanese terms, with an option to add it to your bank. The bank is where the user's words are displayed where new ones can be entered using the + button, and existing ones can be edited or deleted from the buttons on the card. The editor has an entry for English, Kanji, and reading elements. The button to the left is the toggle for auto-translator. It is on by default for entering new terms, and off by default when editing an existing term.
 
 <p>
-<img src="examples/bank.jpg" alt="bank" width="300"/>
-<img src="examples/home.jpg" alt="home" width="300"/>
-<img src="examples/editor.jpg" alt="editor" width="300"/>
+<img src="examples/bank.jpg" alt="bank" width="250"/>
+<img src="examples/home.jpg" alt="home" width="250"/>
+<img src="examples/editor.jpg" alt="editor" width="250"/>
 </p>
