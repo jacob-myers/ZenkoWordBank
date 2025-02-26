@@ -28,6 +28,7 @@ class NewWordDialogue extends StatefulWidget {
 
 class _NewWordDialogue extends State<NewWordDialogue> {
   final _kanaKit = const KanaKit();
+  bool _autotranslate = true;
 
   List<EnJaPair> ja_translations = [];
 
@@ -87,6 +88,7 @@ class _NewWordDialogue extends State<NewWordDialogue> {
   void initState() {
     super.initState();
     if (widget.term != null) {
+      _autotranslate = false;
       _englishController.value = TextEditingValue(text: widget.term!.en_term);
       if (widget.term!.k_term != null) {
         _dropdownController.value = TextEditingValue(text: widget.term!.k_term!);
@@ -107,40 +109,74 @@ class _NewWordDialogue extends State<NewWordDialogue> {
       child: Column(
         children: [
           //SizedBox(height: 30),
-          TextField(
-            controller: _englishController,
-            autofocus: true,
-            style: JWBTextStyles.newTermEnglish,
-            maxLines: 1,
-            decoration: InputDecoration(
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
-              ),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
-              ),
-              hintStyle: TextStyle(
-                  color: JWBColors.txtEntryUnfocused
-              ),
-              hintText: "English..."
+          SizedBox(height: 48,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _englishController,
+                    autofocus: true,
+                    style: JWBTextStyles.newTermEnglish,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
+                        ),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                        ),
+                        hintStyle: TextStyle(
+                            color: JWBColors.txtEntryUnfocused
+                        ),
+                        hintText: "English..."
+                    ),
+                    onTapOutside: (event) {
+                      FocusScope.of(context).unfocus();
+                    },
+                    onChanged: (String value) async {
+                      //newTerm.en_term = value;
+                      if (value.length > 2 && _autotranslate) {
+                        _translateFrom(value);
+                      }
+                    },
+                    onSubmitted: (String value) async {
+                      if (value.length <= 2 && _autotranslate) {
+                        _translateFrom(value);
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(width: 5),
+                InkWell(
+                  child: Container(
+                    height: 44,
+                    width: 44,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 2.0,
+                        color: _autotranslate ? JWBColors.autotranslateEnabled : JWBColors.autotranslateDisabled
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      color: _autotranslate ? JWBColors.autotranslateEnabledBG : JWBColors.autotranslateDisabledBG
+                    ),
+                    child: Icon(
+                      Icons.translate,
+                      size: 30,
+                      color: _autotranslate ? JWBColors.autotranslateEnabled : JWBColors.autotranslateDisabled,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _autotranslate = !_autotranslate;
+                    });
+                  },
+                )
+              ],
             ),
-            onTapOutside: (event) {
-              FocusScope.of(context).unfocus();
-            },
-            onChanged: (String value) async {
-              //newTerm.en_term = value;
-              if (value.length > 2) {
-                _translateFrom(value);
-              }
-            },
-            onSubmitted: (String value) async {
-              if (value.length <= 2) {
-                _translateFrom(value);
-              }
-            },
           ),
 
           SizedBox(height: 10),

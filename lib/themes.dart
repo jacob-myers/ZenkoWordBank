@@ -30,6 +30,11 @@ class JWBColors {
   static const newTermButtonConfirm = Color(0xFFA82E3E);
   static const newTermButtonCancel = Color(0xFF575757);
   static const newTermDropdownBackground = Color(0xFF3E3E3E);
+
+  static const autotranslateEnabled = Color(0xFFFFFFFF);
+  static const autotranslateDisabled = Color(0xFFA1A1A1);
+  static const autotranslateEnabledBG = Color(0xFF404040);
+  static const autotranslateDisabledBG = Color(0xFF232323);
 }
 
 class JWBGradients {
