@@ -45,12 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           child: PageView(
             controller: pc,
+            onPageChanged: _onPageChange,
             children: [
               PageWords(),
-              PageHome(),
+              PageHome(
+                navigateToPageN: _onNavbarItemTapped,
+              ),
               PageTranslate()
             ],
-            onPageChanged: _onPageChange,
           )
         )
       ),

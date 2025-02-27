@@ -10,7 +10,12 @@ import 'package:japanese_word_bank/widgets/term_editor.dart';
 import 'package:japanese_word_bank/themes.dart';
 
 class PageHome extends StatefulWidget {
-  const PageHome({super.key});
+  final Function(int)? navigateToPageN;
+
+  const PageHome({
+    super.key,
+    this.navigateToPageN
+  });
 
   @override
   State<StatefulWidget> createState() => _PageHome();
@@ -32,7 +37,7 @@ class _PageHome extends State<PageHome> {
           ),
         ),
         SizedBox(
-          height: 250,
+          height: 270,
           child: FutureBuilder(
               future: DictDatabaseHelper.instance.getRandomWord(DateTime.now().millisecondsSinceEpoch ~/ (1000 * 60 * 60 * 24)),
               builder: (BuildContext context, AsyncSnapshot<TermEntry> snapshot) {
@@ -73,54 +78,61 @@ class _PageHome extends State<PageHome> {
               }
           ),
         ),
-        //SizedBox(height: 100),
+
         Card(
           margin: EdgeInsets.fromLTRB(5, 5, 70, 2),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-            decoration: BoxDecoration(
-              color: JWBColors.entryBackground,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                children: [
-                  Icon(Icons.arrow_back_ios_new),
-                  SizedBox(width: 10),
-                  Text(
-                    "Word Bank",
-                    style: JWBTextStyles.homeCardText,
+          child: InkWell(
+            onTap: () { widget.navigateToPageN != null ? widget.navigateToPageN!(0) : null; },
+            child: Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  color: JWBColors.entryBackground,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: SizedBox(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Icon(Icons.arrow_back_ios_new),
+                      SizedBox(width: 10),
+                      Text(
+                        "Word Bank",
+                        style: JWBTextStyles.homeCardText,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
+                )
+            ),
           ),
         ),
+
         Card(
           margin: EdgeInsets.fromLTRB(70, 5, 5, 2),
-          child: Container(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-              decoration: BoxDecoration(
-                color: JWBColors.entryBackground,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: SizedBox(
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Translator",
-                      style: JWBTextStyles.homeCardText,
-                    ),
-                    SizedBox(width: 10),
-                    Icon(Icons.arrow_forward_ios),
-                  ],
+          child: InkWell(
+            onTap: () { widget.navigateToPageN != null ? widget.navigateToPageN!(2) : null; },
+            child: Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  color: JWBColors.entryBackground,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              )
+                child: SizedBox(
+                  height: 50,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "Translator",
+                        style: JWBTextStyles.homeCardText,
+                      ),
+                      SizedBox(width: 10),
+                      Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                )
+            ),
           ),
-        )
+        ),
       ],
     );
   }
