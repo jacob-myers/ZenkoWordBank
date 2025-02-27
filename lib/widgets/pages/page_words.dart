@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:japanese_word_bank/functions/search.dart';
 
 // Local
 import 'package:japanese_word_bank/widgets/term_card.dart';
@@ -18,6 +19,8 @@ class PageWords extends StatefulWidget {
 }
 
 class _PageWords extends State<PageWords> {
+  final TextEditingController _searchController = TextEditingController();
+
   List<TermEntry> entries = [
     TermEntry(en_term: "Hello", reading: "こんにちは"),
     TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
@@ -27,38 +30,55 @@ class _PageWords extends State<PageWords> {
     TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
   ];
 
+  late Future<List<TermEntry>> _entries;
+
   _superSetState() {
     setState(() {});
   }
 
+  void _refreshTerms() async {
+    _entries = WordsDatabaseHelper.instance.getTerms();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshTerms();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //List<TermEntry> terms = _searchIndex.search(_searchController.value.text);
+
     return Column(
       children: [
         Expanded(
-            child: FutureBuilder(
-                future: WordsDatabaseHelper.instance.getTerms(),
-                builder: (BuildContext context, AsyncSnapshot<List<TermEntry>> snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: Text("Loading..."));
-                  }
-
-                  return ListView(
-                      children: List.generate(snapshot.data!.length, (i) {
-                        return TermCard(
-                          term: snapshot.data![i],
-                          onDelete: () {
-                            setState(() {});
-                          },
-                          onEdit: () {
-                            setState(() {});
-                          },
-                          showButtons: true,
-                        );
-                      })
-                  );
+          child: FutureBuilder(
+              future: _entries,
+              builder: (BuildContext context, AsyncSnapshot<List<TermEntry>> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: Text("Loading..."));
                 }
-            )
+
+                final searchIndex = TermSearch(snapshot.data!);
+                final terms = searchIndex.search(_searchController.value.text);
+                return ListView(
+                  children: List.generate(terms.length, (i) {
+                    return TermCard(
+                      term: terms[i],
+                      onDelete: () {
+                        _refreshTerms();
+                      },
+                      onEdit: () {
+                        _refreshTerms();
+                      },
+                      showButtons: true,
+                    );
+                  })
+                );
+              }
+          ),
         ),
         Container(
           decoration: BoxDecoration(
@@ -69,6 +89,8 @@ class _PageWords extends State<PageWords> {
             children: [
               Expanded(
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (String val) { setState(() {}); },
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -101,7 +123,9 @@ class _PageWords extends State<PageWords> {
                     builder: (context) {
                       return Dialog.fullscreen(
                         child: TermEditor(
-                          onClose: _superSetState,
+                          onClose: () {
+                            _refreshTerms();
+                          },
                         )
                       );
                     }
