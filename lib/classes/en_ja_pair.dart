@@ -30,7 +30,7 @@ class EnJaPair {
   }
 
   String get en_term {
-    return en_senses[0].toString();
+    return en_senses.reduce((a, b) => a.pri > b.pri ? a : b).toString();
   }
 
   @override
