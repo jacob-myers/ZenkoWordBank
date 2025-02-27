@@ -26,6 +26,7 @@ class TermCard extends StatefulWidget {
 }
 
 class _TermCard extends State<TermCard> {
+  int maxTextLen = 60;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,10 @@ class _TermCard extends State<TermCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.term.en_term, style: JWBTextStyles.termEnglish),
+                  Text(
+                    widget.term.en_term.length > maxTextLen ? "${widget.term.en_term.substring(0, maxTextLen)}..." : widget.term.en_term,
+                    style: JWBTextStyles.termEnglish
+                  ),
                   Text(widget.term.ja_term, style: JWBTextStyles.termJapMain),
                   widget.term.k_term != null ? Text(widget.term.reading, style: JWBTextStyles.termReading) : Container(),
                   Text(widget.term.romaji, style: JWBTextStyles.termRomaji),
