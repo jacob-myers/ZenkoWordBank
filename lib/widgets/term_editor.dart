@@ -170,6 +170,9 @@ class _TermEditor extends State<TermEditor> {
                   onTap: () {
                     setState(() {
                       _autotranslate = !_autotranslate;
+                      if (_autotranslate) {
+                        _translateFrom(_englishController.value.text);
+                      }
                     });
                   },
                 )
