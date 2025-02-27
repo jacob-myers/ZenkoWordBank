@@ -35,7 +35,7 @@ class _PageHome extends State<PageHome> {
         SizedBox(
           height: 250,
           child: FutureBuilder(
-              future: DictDatabaseHelper.instance.getRandomWord(4),
+              future: DictDatabaseHelper.instance.getRandomWord(DateTime.now().millisecondsSinceEpoch ~/ (1000 * 60 * 60 * 24)),
               builder: (BuildContext context, AsyncSnapshot<TermEntry> snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: Text("Loading..."));
