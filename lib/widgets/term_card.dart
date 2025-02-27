@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 // Local
 import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/persistence.dart';
-import 'package:japanese_word_bank/themes.dart';
 import 'package:japanese_word_bank/widgets/delete_confirmation.dart';
 import 'package:japanese_word_bank/widgets/term_editor.dart';
+
+// Styles
+import 'package:japanese_word_bank/themes.dart';
 
 class TermCard extends StatefulWidget {
   Function? onDelete;

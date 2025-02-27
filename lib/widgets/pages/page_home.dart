@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:japanese_word_bank/functions/translate.dart';
 
 // Local
-import 'package:japanese_word_bank/widgets/term_card.dart';
+import 'package:japanese_word_bank/functions/translate.dart';
 import 'package:japanese_word_bank/classes/term_entry.dart';
+import 'package:japanese_word_bank/widgets/term_card.dart';
+import 'package:japanese_word_bank/widgets/term_editor.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
-import 'package:japanese_word_bank/widgets/term_editor.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({super.key});
@@ -17,7 +17,6 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHome extends State<PageHome> {
-  //TermEntry? dailyTerm;
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 
 // Local
-import 'package:japanese_word_bank/classes/en_ja_pair.dart';
-import 'package:japanese_word_bank/classes/term_entry.dart';
-import 'package:japanese_word_bank/functions/translate.dart';
 import 'package:japanese_word_bank/widgets/pages/page_home.dart';
 import 'package:japanese_word_bank/widgets/pages/page_translate.dart';
 import 'package:japanese_word_bank/widgets/pages/page_words.dart';
-import 'package:japanese_word_bank/widgets/term_card.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
@@ -27,7 +23,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onNavbarItemTapped (int index) {
     setState(() {
       pc.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.ease);
-      //_selectedIndex = index;
     });
   }
 
