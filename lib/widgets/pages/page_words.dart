@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:japanese_word_bank/functions/search.dart';
 
 // Local
-import 'package:japanese_word_bank/widgets/term_card.dart';
+import 'package:japanese_word_bank/persistence.dart';
+import 'package:japanese_word_bank/functions/search.dart';
 import 'package:japanese_word_bank/classes/term_entry.dart';
+import 'package:japanese_word_bank/widgets/term_card.dart';
+import 'package:japanese_word_bank/widgets/term_editor.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
-
-import '../../persistence.dart';
-import '../term_editor.dart';
 
 class PageWords extends StatefulWidget {
   const PageWords({super.key});
@@ -21,20 +20,7 @@ class PageWords extends StatefulWidget {
 class _PageWords extends State<PageWords> {
   final TextEditingController _searchController = TextEditingController();
 
-  List<TermEntry> entries = [
-    TermEntry(en_term: "Hello", reading: "こんにちは"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-    TermEntry(en_term: "Rice", k_term: "米", reading: "こめ"),
-  ];
-
   late Future<List<TermEntry>> _entries;
-
-  _superSetState() {
-    setState(() {});
-  }
 
   void _refreshTerms() async {
     _entries = WordsDatabaseHelper.instance.getTerms();
@@ -49,8 +35,6 @@ class _PageWords extends State<PageWords> {
 
   @override
   Widget build(BuildContext context) {
-    //List<TermEntry> terms = _searchIndex.search(_searchController.value.text);
-
     return Column(
       children: [
         Expanded(
@@ -108,11 +92,10 @@ class _PageWords extends State<PageWords> {
                       hintStyle: TextStyle(
                           color: JWBColors.txtEntryUnfocused
                       ),
-                      hintText: "English or Romaji..."
+                      hintText: "Search..."
                   ),
                 ),
               ),
-
 
               IconButton(
                 padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
