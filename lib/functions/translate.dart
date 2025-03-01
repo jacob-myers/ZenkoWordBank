@@ -183,10 +183,6 @@ class DictDatabaseHelper {
       first['reading'] == null ? first['ja_value'].toString() : first['reading'].toString(),
       first['en_value'].toString(),
     );
-    return TermEntry(
-      en_term: ej.en_term,
-      k_term: ej.k_term,
-      reading: ej.reading
-    );
+    return TermEntry.fromEnJaPair(ej);
   }
 }

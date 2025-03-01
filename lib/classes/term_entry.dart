@@ -1,3 +1,4 @@
+import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 import 'package:kana_kit/kana_kit.dart';
 
 class TermEntry {
@@ -6,7 +7,7 @@ class TermEntry {
   String? k_term;
   String reading;
 
-  final _kanaKit = const KanaKit();
+  static const _kanaKit = KanaKit();
 
   TermEntry({this.id, required this.en_term, String? this.k_term, required this.reading});
 
@@ -16,6 +17,14 @@ class TermEntry {
       en_term: json["en_term"],
       k_term: json["kanji"],
       reading: json["reading"],
+    );
+  }
+
+  factory TermEntry.fromEnJaPair(EnJaPair pair) {
+    return TermEntry(
+      en_term: pair.en_term,
+      k_term: pair.k_term,
+      reading: pair.reading,
     );
   }
 
