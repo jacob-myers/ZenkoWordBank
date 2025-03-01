@@ -17,6 +17,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _translateController = TextEditingController();
   PageController pc = PageController(initialPage: 1);
 
   int _selectedIndex = 1;
@@ -51,7 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
               PageHome(
                 navigateToPageN: _onNavbarItemTapped,
               ),
-              PageTranslate()
+              PageTranslate(
+                controller: _translateController,
+              )
             ],
           )
         )

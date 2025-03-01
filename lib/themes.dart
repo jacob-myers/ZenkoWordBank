@@ -35,6 +35,8 @@ class JWBColors {
   static const autotranslateDisabled = Color(0xFFA1A1A1);
   static const autotranslateEnabledBG = Color(0xFF404040);
   static const autotranslateDisabledBG = Color(0xFF232323);
+
+  static const translateResultBackground = Color(0xFF676767);
 }
 
 class JWBGradients {
@@ -104,5 +106,14 @@ class JWBTextStyles {
   static const newTermButton = TextStyle(
     color: JWBColors.entryTextMain,
     fontSize: 16
+  );
+
+  static const translateResultEn = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 14
+  );
+  static const translateResultMain = TextStyle(
+      color: JWBColors.entryTextMain,
+      fontSize: 30
   );
 }

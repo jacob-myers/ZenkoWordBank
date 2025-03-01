@@ -1,3 +1,5 @@
+import 'package:kana_kit/kana_kit.dart';
+
 import 'sense.dart';
 
 class EnJaPair {
@@ -6,6 +8,8 @@ class EnJaPair {
   String? k_term;
   String reading;
   List<Sense> en_senses;
+
+  static const _kanaKit = KanaKit();
 
   EnJaPair({required this.pri, this.k_term, required this.reading, required this.en_senses, this.freq_group});
 
@@ -31,6 +35,10 @@ class EnJaPair {
 
   String get en_term {
     return en_senses.reduce((a, b) => a.pri > b.pri ? a : b).toString();
+  }
+
+  String get romaji {
+    return _kanaKit.toRomaji(reading);
   }
 
   @override
