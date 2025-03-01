@@ -16,14 +16,14 @@ class TermSearch {
   }
 
   void addToIndex(TermEntry term) {
-    term.en_term.split(wordSplit).forEach((w) => index.insert(w, term));
+    term.en_term.split(wordSplit).forEach((w) => index.insert(w.toLowerCase(), term));
     term.k_term != null ? index.insert(term.k_term!, term) : null;
     index.insert(term.reading, term);
     index.insert(term.romaji, term);
   }
 
   void removeFromIndex(TermEntry term) {
-    term.en_term.split(wordSplit).forEach((w) => index.remove(w, term));
+    term.en_term.split(wordSplit).forEach((w) => index.remove(w.toLowerCase(), term));
     term.k_term != null ? index.remove(term.k_term!, term) : null;
     index.remove(term.reading, term);
     index.remove(term.romaji, term);
@@ -34,7 +34,7 @@ class TermSearch {
   }
 
   List<TermEntry> search(String query) {
-    return query
+    return query.toLowerCase()
       .split(wordSplit)
       .map((t) => index.search(t).toSet())
       .reduce(intersect)
