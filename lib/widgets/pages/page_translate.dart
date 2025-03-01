@@ -37,7 +37,9 @@ class _PageTranslate extends State<PageTranslate> {
   @override
   void initState() {
     super.initState();
-    _translateFromEn(widget.controller.value.text);
+    if (widget.controller.value.text.length > 2) {
+      _translateFromEn(widget.controller.value.text);
+    }
   }
 
   @override
