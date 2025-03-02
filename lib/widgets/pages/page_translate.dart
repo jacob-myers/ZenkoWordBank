@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
 // Local
-import 'package:japanese_word_bank/widgets/term_card.dart';
-import 'package:japanese_word_bank/classes/term_entry.dart';
+import 'package:japanese_word_bank/classes/en_ja_pair.dart';
+import 'package:japanese_word_bank/functions/translate.dart';
+import 'package:japanese_word_bank/widgets/translate_card.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
-
-import '../../classes/en_ja_pair.dart';
-import '../../functions/translate.dart';
-import '../translate_card.dart';
 
 class PageTranslate extends StatefulWidget {
   TextEditingController controller;
@@ -28,11 +25,8 @@ class PageTranslate extends StatefulWidget {
 }
 
 class _PageTranslate extends State<PageTranslate> {
-  //final _translateController = TextEditingController();
   bool _enToJa = true;
   FocusNode translateEntryFocus = FocusNode();
-
-  //List<EnJaPair> translations = [];
 
   void _translateFromEn(String en) async {
     final translations = await DictDatabaseHelper.instance.translateNResults(en, 10);
@@ -40,115 +34,102 @@ class _PageTranslate extends State<PageTranslate> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    //translations = widget.translationResults;
-    if (widget.controller.value.text.length > 2) {
-      //_translateFromEn(widget.controller.value.text);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
-      //mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        // English to Japanese.
-        _enToJa && widget.translationResults.isNotEmpty? Expanded(
-          child: ListView(
-            children: List.generate(widget.translationResults.length, (i) {
-              return TranslateCard(
-                  term: widget.translationResults[i]
-              );
-            }),
-          ),
-        ) :
-        // Japanese to English.
-        !_enToJa && widget.translationResults.isNotEmpty? Expanded(
-          child: Container(),
-        ) :
-        // No translations to show.
-        Container(),
+        Expanded(
+          child: Listener(
+            onPointerDown: (_) {
+              FocusScope.of(context).unfocus();
+            },
 
-        //SizedBox(height: 5),
+            child: widget.translationResults.isEmpty ? Container() :
+            // English to Japanese.
+              _enToJa ? ListView(
+                children: List.generate(widget.translationResults.length, (i) {
+                  return TranslateCard(
+                      term: widget.translationResults[i]
+                  );
+                }),
+              ) :
+              // Japanese to English.
+              Container()
+          )
+        ),
 
         Container(
-            decoration: const BoxDecoration(
-              color: JWBColors.txtEntryBG,
-            ),
-            padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
-            child: Column(
-              children: [
-                TextField(
-                  focusNode: translateEntryFocus,
-                  controller: widget.controller,
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                  maxLines: 1,
-                  decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
-                      ),
-                      hintStyle: TextStyle(
-                          color: JWBColors.txtEntryUnfocused
-                      ),
-                      hintText: "Translate...",
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            widget.controller.clear();
-                            widget.setTranslationResults([]);
-                          },
-                          icon: Icon(Icons.clear, size: 20,)
-                      )
-                  ),
-                  onTapOutside: (event) {
-                    FocusScope.of(context).unfocus();
-                  },
-                  onChanged: (String val) {
-                    if (val.length > 2) {
-                      if (_enToJa) {
-                        _translateFromEn(val);
-                      }
-                    }
-                  },
+          decoration: const BoxDecoration(
+            color: JWBColors.txtEntryBG,
+          ),
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
+          child: Column(
+            children: [
+              TextField(
+                focusNode: translateEntryFocus,
+                controller: widget.controller,
+                style: TextStyle(
+                  fontSize: 20,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _enToJa ? "English" : "Japanese",
-                        textAlign: TextAlign.right,
-                      ),
+                maxLines: 1,
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
+                  ),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                  ),
+                  hintStyle: TextStyle(
+                      color: JWBColors.txtEntryUnfocused
+                  ),
+                  hintText: "Translate...",
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        widget.controller.clear();
+                        widget.setTranslationResults([]);
+                      },
+                      icon: Icon(Icons.clear, size: 20,)
+                  )
+                ),
+                onChanged: (String val) {
+                  if (val.length > 2) {
+                    if (_enToJa) {
+                      _translateFromEn(val);
+                    }
+                  }
+                },
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _enToJa ? "English" : "Japanese",
+                      textAlign: TextAlign.right,
                     ),
-                    SizedBox(width: 10),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _enToJa = !_enToJa;
-                          });
-                        },
-                        icon: Icon(Icons.swap_horiz)
-                    ),
+                  ),
+                  SizedBox(width: 10),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _enToJa = !_enToJa;
+                        });
+                      },
+                      icon: Icon(Icons.swap_horiz)
+                  ),
 
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        _enToJa ? "Japanese" : "English",
-                        textAlign: TextAlign.left,
-                      ),
-                    )
-                  ],
-                )
-              ],
-            )
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      _enToJa ? "Japanese" : "English",
+                      textAlign: TextAlign.left,
+                    ),
+                  )
+                ],
+              )
+            ],
+          )
         ),
       ],
     );
