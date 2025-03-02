@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 
 // Local
 import 'package:japanese_word_bank/widgets/pages/page_home.dart';
@@ -18,6 +19,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _translateController = TextEditingController();
+  List<EnJaPair> translationResults = [];
   PageController pc = PageController(initialPage: 1);
 
   int _selectedIndex = 1;
@@ -54,6 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               PageTranslate(
                 controller: _translateController,
+                translationResults: translationResults,
+                setTranslationResults: (List<EnJaPair> res) {
+                  setState(() {
+                    translationResults = res;
+                  });
+                },
               )
             ],
           )

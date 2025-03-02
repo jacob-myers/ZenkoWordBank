@@ -13,10 +13,14 @@ import '../translate_card.dart';
 
 class PageTranslate extends StatefulWidget {
   TextEditingController controller;
+  List<EnJaPair> translationResults;
+  Function(List<EnJaPair>) setTranslationResults;
 
   PageTranslate({
     super.key,
-    required this.controller
+    required this.controller,
+    required this.translationResults,
+    required this.setTranslationResults,
   });
 
   @override
@@ -27,18 +31,19 @@ class _PageTranslate extends State<PageTranslate> {
   //final _translateController = TextEditingController();
   final _enToJa = true;
 
-  List<EnJaPair> translations = [];
+  //List<EnJaPair> translations = [];
 
   void _translateFromEn(String en) async {
-    translations = await DictDatabaseHelper.instance.translateNResults(en, 10);
-    setState(() {});
+    final translations = await DictDatabaseHelper.instance.translateNResults(en, 10);
+    widget.setTranslationResults(translations);
   }
 
   @override
   void initState() {
     super.initState();
+    //translations = widget.translationResults;
     if (widget.controller.value.text.length > 2) {
-      _translateFromEn(widget.controller.value.text);
+      //_translateFromEn(widget.controller.value.text);
     }
   }
 
@@ -68,7 +73,14 @@ class _PageTranslate extends State<PageTranslate> {
                 hintStyle: TextStyle(
                     color: JWBColors.txtEntryUnfocused
                 ),
-                hintText: "Translate..."
+                hintText: "Translate...",
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      widget.controller.clear();
+                      widget.setTranslationResults([]);
+                    },
+                    icon: Icon(Icons.clear, size: 20,)
+                )
             ),
             onTapOutside: (event) {
               FocusScope.of(context).unfocus();
@@ -86,17 +98,17 @@ class _PageTranslate extends State<PageTranslate> {
         SizedBox(height: 5),
 
         // English to Japanese.
-        _enToJa && translations.isNotEmpty? Expanded(
+        _enToJa && widget.translationResults.isNotEmpty? Expanded(
           child: ListView(
-            children: List.generate(translations.length, (i) {
+            children: List.generate(widget.translationResults.length, (i) {
               return TranslateCard(
-                  term: translations[i]
+                  term: widget.translationResults[i]
               );
             }),
           ),
         ) :
         // Japanese to English.
-        !_enToJa && translations.isNotEmpty? Expanded(
+        !_enToJa && widget.translationResults.isNotEmpty? Expanded(
           child: Container(),
         ) :
         // No translations to show.
