@@ -3,13 +3,10 @@ import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/term_entry.dart';
-import 'package:japanese_word_bank/persistence.dart';
-import 'package:japanese_word_bank/widgets/delete_confirmation.dart';
 import 'package:japanese_word_bank/widgets/term_editor.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
-import 'package:kana_kit/kana_kit.dart';
 
 class TranslateCard extends StatefulWidget {
   final EnJaPair term;
@@ -24,7 +21,7 @@ class TranslateCard extends StatefulWidget {
 }
 
 class _TranslateCard extends State<TranslateCard> {
-  int maxTextLen = 60;
+  int maxTextLen = 70;
 
   @override
   Widget build(BuildContext context) {
