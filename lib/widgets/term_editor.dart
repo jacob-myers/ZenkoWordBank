@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:async/async.dart';
 import 'package:kana_kit/kana_kit.dart';
 
 // Local
@@ -32,6 +33,7 @@ class _TermEditor extends State<TermEditor> {
   bool _autotranslate = true;
 
   List<EnJaPair> ja_translations = [];
+  CancelableOperation? _editingOperation;
 
   final TextEditingController _englishController = TextEditingController();
   final TextEditingController _dropdownController = TextEditingController();
@@ -56,7 +58,12 @@ class _TermEditor extends State<TermEditor> {
     );
   }
 
-  void updateReading(EnJaPair pair) {
+  void updateReading(EnJaPair? pair) {
+    if (pair == null) {
+      _readingController.value =  TextEditingValue(text: "");
+      _romaji = "";
+      return;
+    }
     _readingController.value = pair.k_term == null ? TextEditingValue(text: "") :
     TextEditingValue(
       text: pair.reading,
@@ -68,11 +75,24 @@ class _TermEditor extends State<TermEditor> {
   }
 
   void _translateFrom(String value) async {
-    ja_translations = await DictDatabaseHelper.instance.translateToJaN(value, widget.dropdownCount);
-    if (ja_translations.isNotEmpty) {
-      updateReading(ja_translations.first);
-    }
-    setState(() {});
+    _editingOperation?.cancel();
+    _editingOperation = CancelableOperation.fromFuture(
+      DictDatabaseHelper.instance.translateToJaN(value, widget.dropdownCount)
+    );
+    _editingOperation!.value.then((result) {
+      ja_translations = result;
+      if (ja_translations.isNotEmpty) {
+        updateReading(ja_translations.first);
+      } else {
+        _dropdownController.value = TextEditingValue(text: "");
+        updateReading(null);
+      }
+      setState(() {});
+    });
+
+
+    //ja_translations = await DictDatabaseHelper.instance.translateToJaN(value, widget.dropdownCount);
+
   }
 
   @override
