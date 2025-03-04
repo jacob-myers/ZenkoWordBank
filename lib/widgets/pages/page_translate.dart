@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:async/async.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
@@ -28,14 +29,27 @@ class _PageTranslate extends State<PageTranslate> {
   bool _enToJa = true;
   FocusNode translateEntryFocus = FocusNode();
 
-  void _translateFromEn(String en) async {
-    final translations = await DictDatabaseHelper.instance.translateToJaN(en, 10);
-    widget.setTranslationResults(translations);
+  CancelableOperation? _editingOperation;
+
+
+  Future<void> _translateFromEn(String en) async {
+    _editingOperation?.cancel();
+    _editingOperation = CancelableOperation.fromFuture(
+        DictDatabaseHelper.instance.translateToJaN(en, 10),
+    );
+    _editingOperation!.value.then((result) {
+      widget.setTranslationResults(result);
+    });
   }
   
-  void _translateFromJa(String ja) async {
-    final translations = await DictDatabaseHelper.instance.translateToEnN(ja, 10);
-    widget.setTranslationResults(translations);
+  Future<void> _translateFromJa(String ja) async {
+    _editingOperation?.cancel();
+    _editingOperation = CancelableOperation.fromFuture(
+        DictDatabaseHelper.instance.translateToEnN(ja, 10),
+    );
+    _editingOperation!.value.then((result) {
+      widget.setTranslationResults(result);
+    });
   }
 
   @override

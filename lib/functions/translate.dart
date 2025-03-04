@@ -70,14 +70,13 @@ class DictDatabaseHelper {
     // Joins JA_TERMS and EN_TERMS where the enIDs are equal and en value contains en_term.
     // i.e Finds english matches and their related japanese elements.
 
-    Database db = await instance.database;
-
     if (en_term.isEmpty) {
       return [];
     }
 
-    List<dynamic> res = [];
+    Database db = await instance.database;
 
+    List<dynamic> res = [];
     res = await db.rawQuery('''
       SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
       FROM JA_TERMS ja
@@ -130,7 +129,13 @@ class DictDatabaseHelper {
   }
 
   Future<List<EnJaPair>> translateToEn(String ja_term) async {
+    // Translates a given Japanese term to English.
+    if (ja_term.isEmpty) {
+      return [];
+    }
+
     Database db = await instance.database;
+
     List<dynamic> res = await db.rawQuery('''
       SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
       FROM JA_TERMS ja
