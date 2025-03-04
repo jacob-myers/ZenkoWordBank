@@ -22,15 +22,15 @@ class _DeleteConfirmation extends State<DeleteConfirmation> {
       backgroundColor: JWBColors.txtEntryBG,
       content: Container(
         height: 110,
-        padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         child: Column(
           children: [
-            Text(
+            const Text(
               "Are you sure you want to delete this term?",
               textAlign: TextAlign.center,
               style: JWBTextStyles.bodyText,
             ),
-            Spacer(),
+            const Spacer(),
             Row(
               children: [
                 Expanded(
@@ -38,27 +38,27 @@ class _DeleteConfirmation extends State<DeleteConfirmation> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text("Cancel"),
-                    style: ButtonStyle(
+                    style: const ButtonStyle(
                       textStyle: WidgetStatePropertyAll(JWBTextStyles.newTermButton),
                       backgroundColor: WidgetStatePropertyAll(JWBColors.newTermButtonCancel),
                       foregroundColor: WidgetStatePropertyAll(JWBColors.entryTextMain),
                     ),
+                    child: Text("Cancel"),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                       widget.delete();
                     },
-                    child: Text("Delete"),
-                    style: ButtonStyle(
+                    style: const ButtonStyle(
                       textStyle: WidgetStatePropertyAll(JWBTextStyles.newTermButton),
                       backgroundColor: WidgetStatePropertyAll(JWBColors.newTermButtonConfirm),
                       foregroundColor: WidgetStatePropertyAll(JWBColors.entryTextMain),
                     ),
+                    child: Text("Delete"),
                   ),
                 )
               ],
@@ -68,5 +68,4 @@ class _DeleteConfirmation extends State<DeleteConfirmation> {
       ),
     );
   }
-
 }
