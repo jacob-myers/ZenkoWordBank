@@ -15,6 +15,8 @@ When entering a new term, if the auto-translator is turned on in the editor (it 
 
 For these results, If they have a Kanji writing, this is entered as the primary term, with the phonetic reading placed in the reading entry. However if the word has no Kanji writing, then the reading will be placed as the primary element. The romaji (pronunciation represented in Latin letters) is generated from wherever the reading element is.
 
+The same algorithm is used for translating English to Japanese on the Translate page, and a modified version is used for translating from Japanese to English, mostly having to do with the SQL queries.
+
 ### Interface
 
 #### Home
