@@ -4,7 +4,7 @@ class JWBThemes {
   static final darkTheme = ThemeData(
     primaryColor: const Color(0xFF233882),
     brightness: Brightness.dark,
-    textSelectionTheme: TextSelectionThemeData(
+    textSelectionTheme: const TextSelectionThemeData(
       cursorColor: Colors.white,
       selectionColor: Colors.black54,
       selectionHandleColor: Colors.white,
