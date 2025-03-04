@@ -39,48 +39,48 @@ class _PageWords extends State<PageWords> {
       children: [
         Expanded(
           child: FutureBuilder(
-              future: _entries,
-              builder: (BuildContext context, AsyncSnapshot<List<TermEntry>> snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: Text("Loading..."));
-                }
-
-                final searchIndex = TermSearch(snapshot.data!);
-                final terms = searchIndex.search(_searchController.value.text);
-                terms.sort((a, b) => b.id!.compareTo(a.id!));
-                return ListView(
-                  children: List.generate(terms.length, (i) {
-                    return TermCard(
-                      term: terms[i],
-                      onDelete: () {
-                        _refreshTerms();
-                      },
-                      onEdit: () {
-                        _refreshTerms();
-                      },
-                      showButtons: true,
-                    );
-                  })
-                );
+            future: _entries,
+            builder: (BuildContext context, AsyncSnapshot<List<TermEntry>> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: Text("Loading..."));
               }
+
+              final searchIndex = TermSearch(snapshot.data!);
+              final terms = searchIndex.search(_searchController.value.text);
+              terms.sort((a, b) => b.id!.compareTo(a.id!));
+              return ListView(
+                children: List.generate(terms.length, (i) {
+                  return TermCard(
+                    term: terms[i],
+                    onDelete: () {
+                      _refreshTerms();
+                    },
+                    onEdit: () {
+                      _refreshTerms();
+                    },
+                    showButtons: true,
+                  );
+                })
+              );
+            }
           ),
         ),
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: JWBColors.txtEntryBG
           ),
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
           child: Row(
             children: [
               Expanded(
                 child: TextField(
                   controller: _searchController,
                   onChanged: (String val) { setState(() {}); },
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                   ),
                   maxLines: 1,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
                       ),
@@ -99,8 +99,8 @@ class _PageWords extends State<PageWords> {
               ),
 
               IconButton(
-                padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
-                icon: Icon(Icons.add_box_rounded, size: 40,),
+                padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                icon: const Icon(Icons.add_box_rounded, size: 40,),
                 onPressed: () {
                   showDialog(
                     context: context,
