@@ -145,7 +145,9 @@ class _TermEditor extends State<TermEditor> {
                       FocusScope.of(context).unfocus();
                     },
                     onChanged: (String value) async {
-                      _translateFrom(value);
+                      if (_autotranslate) {
+                        _translateFrom(value);
+                      }
                     },
                   ),
                 ),
