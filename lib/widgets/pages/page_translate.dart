@@ -28,9 +28,7 @@ class PageTranslate extends StatefulWidget {
 class _PageTranslate extends State<PageTranslate> {
   bool _enToJa = true;
   FocusNode translateEntryFocus = FocusNode();
-
   CancelableOperation? _editingOperation;
-
 
   Future<void> _translateFromEn(String en) async {
     _editingOperation?.cancel();
@@ -57,56 +55,59 @@ class _PageTranslate extends State<PageTranslate> {
     return Column(
       children: [
         Expanded(
+          // Listener ensures if list is interacted with, it unfocuses the text field.
           child: Listener(
             onPointerDown: (_) {
               FocusScope.of(context).unfocus();
             },
 
+            // Translation result cards.
             child: widget.translationResults.isEmpty ? Container() :
               ListView(
                 children: List.generate(widget.translationResults.length, (i) {
                   return TranslateCard(
-                      term: widget.translationResults[i]
+                    term: widget.translationResults[i]
                   );
                 }),
               )
           )
         ),
 
+        // Text entry and language switch option.
         Container(
           decoration: const BoxDecoration(
             color: JWBColors.txtEntryBG,
           ),
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
           child: Column(
             children: [
               TextField(
                 focusNode: translateEntryFocus,
                 controller: widget.controller,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                 ),
                 maxLines: 1,
                 decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
+                  enabledBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
                   ),
-                  border: UnderlineInputBorder(
+                  border: const UnderlineInputBorder(
                     borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
                   ),
-                  hintStyle: TextStyle(
-                      color: JWBColors.txtEntryUnfocused
+                  hintStyle: const TextStyle(
+                    color: JWBColors.txtEntryUnfocused
                   ),
-                  hintText: "Translate...",
+                  hintText: "Word/Term to Translate...",
                   suffixIcon: IconButton(
-                      onPressed: () {
-                        widget.controller.clear();
-                        widget.setTranslationResults([]);
-                      },
-                      icon: Icon(Icons.clear, size: 20,)
+                    onPressed: () {
+                      widget.controller.clear();
+                      widget.setTranslationResults([]);
+                    },
+                    icon: const Icon(Icons.clear, size: 20,)
                   )
                 ),
                 onChanged: (String val) {
@@ -125,19 +126,19 @@ class _PageTranslate extends State<PageTranslate> {
                       textAlign: TextAlign.right,
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _enToJa = !_enToJa;
-                          widget.controller.value = const TextEditingValue(text: '');
-                          _translateFromEn("");
-                        });
-                      },
-                      icon: Icon(Icons.swap_horiz)
+                    onPressed: () {
+                      setState(() {
+                        _enToJa = !_enToJa;
+                        widget.controller.value = const TextEditingValue(text: '');
+                        _translateFromEn("");
+                      });
+                    },
+                    icon: const Icon(Icons.swap_horiz)
                   ),
 
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       _enToJa ? "Japanese" : "English",
