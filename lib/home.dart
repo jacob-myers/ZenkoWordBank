@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 
 // Local
+import 'package:japanese_word_bank/classes/en_ja_pair.dart';
+
 import 'package:japanese_word_bank/widgets/pages/page_home.dart';
 import 'package:japanese_word_bank/widgets/pages/page_translate.dart';
 import 'package:japanese_word_bank/widgets/pages/page_words.dart';
@@ -10,22 +11,26 @@ import 'package:japanese_word_bank/widgets/pages/page_words.dart';
 import 'package:japanese_word_bank/themes.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
   final String title;
+
+  const MyHomePage({
+    super.key,
+    required this.title
+  });
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  PageController pc = PageController(initialPage: 1);
   final _translateController = TextEditingController();
   List<EnJaPair> translationResults = [];
-  PageController pc = PageController(initialPage: 1);
 
   int _selectedIndex = 1;
   void _onNavbarItemTapped (int index) {
     setState(() {
-      pc.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.ease);
+      pc.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.ease);
     });
   }
 
@@ -74,8 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
           splashColor: Colors.transparent
         ),
         child: Container(
-          padding: EdgeInsets.fromLTRB(0, 3, 0, 3),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+          decoration: const BoxDecoration(
               color: JWBColors.txtEntryBG
           ),
           child: Row(
@@ -110,36 +115,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           )
         ),
-      )
+      ),
 
       /*
+      // Development translation tester.
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-
-
-          //await DatabaseHelper.instance.truncate();
-          //await DatabaseHelper.instance.readAndConvertXML();
-          //print(await DatabaseHelper.instance.find_from_ja_value("ハローワーク"));
-
           String en = "teacher";
-          List<EnJaPair> res = await DatabaseHelper.instance.translate(en);
-          res = res.sublist(0, 10);
+          List<EnJaPair> res = await DatabaseHelper.instance.translateToJaN(en, 10);
           print(en);
           res.forEach(print);
-
-          //print(res.length);
-          //ja.forEach(print);
-
-          //await DatabaseHelper.instance.truncate();
-
-          //await DatabaseHelper.instance.getJAfromEN(1);
-
-          //await DatabaseHelper.instance.getEntries();
-
         }
       ),
       */
-
     );
   }
 }

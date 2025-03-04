@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Local
-import 'package:japanese_word_bank/themes.dart';
-
 import 'home.dart';
 
+// Styles
+import 'package:japanese_word_bank/themes.dart';
+
 void main() {
-  var style = SystemUiOverlayStyle(
+  var style = const SystemUiOverlayStyle(
       systemNavigationBarColor: JWBColors.systemNavbar
   );
   SystemChrome.setSystemUIOverlayStyle(style);
@@ -20,9 +21,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Japanese Word Bank',
+      title: 'Zenko Word Bank',
       theme: JWBThemes.darkTheme,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Zenko Word Bank'),
     );
   }
 }
