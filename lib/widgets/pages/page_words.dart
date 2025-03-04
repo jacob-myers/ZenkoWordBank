@@ -47,6 +47,7 @@ class _PageWords extends State<PageWords> {
 
                 final searchIndex = TermSearch(snapshot.data!);
                 final terms = searchIndex.search(_searchController.value.text);
+                terms.sort((a, b) => b.id!.compareTo(a.id!));
                 return ListView(
                   children: List.generate(terms.length, (i) {
                     return TermCard(
