@@ -13,8 +13,8 @@ class EnJaPair {
 
   EnJaPair({required this.pri, this.k_term, required this.reading, required this.en_senses, this.freq_group});
 
-  factory EnJaPair.fromUnparsedSenses(int pri, String? k_term, String reading, String unpSenses) {
-    return EnJaPair(pri: pri, k_term: k_term, reading: reading, en_senses: unpSenses.split('~').map((sense) => Sense.fromUnparsed(sense)).toList());
+  factory EnJaPair.fromUnparsedSenses({required int pri, String? k_term, required String reading, required String unpSenses, int? freq_group}) {
+    return EnJaPair(pri: pri, k_term: k_term, reading: reading, en_senses: unpSenses.split('~').map((sense) => Sense.fromUnparsed(sense)).toList(), freq_group: freq_group);
   }
 
   String get ja_term {

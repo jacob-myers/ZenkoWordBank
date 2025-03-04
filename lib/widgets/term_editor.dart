@@ -36,15 +36,7 @@ class _TermEditor extends State<TermEditor> {
   final TextEditingController _englishController = TextEditingController();
   final TextEditingController _dropdownController = TextEditingController();
   final TextEditingController _readingController = TextEditingController();
-
-  String _romaji() {
-    if (_readingController.value.text != "") {
-      return _kanaKit.toRomaji(_readingController.value.text);
-    } else if (_dropdownController.value.text != "") {
-      return _kanaKit.toRomaji(_dropdownController.value.text);
-    }
-    return "";
-  }
+  String _romaji = "";
 
   TermEntry? _newTerm() {
     // No english entry or reading and dropdown are blank
@@ -72,10 +64,11 @@ class _TermEditor extends State<TermEditor> {
         TextPosition(offset: pair.reading.length),
       ),
     );
+    _romaji = _kanaKit.toRomaji(pair.reading);
   }
 
   void _translateFrom(String value) async {
-    ja_translations = await DictDatabaseHelper.instance.translateNResults(value, widget.dropdownCount);
+    ja_translations = await DictDatabaseHelper.instance.translateToJaN(value, widget.dropdownCount);
     if (ja_translations.isNotEmpty) {
       updateReading(ja_translations.first);
     }
@@ -136,15 +129,7 @@ class _TermEditor extends State<TermEditor> {
                       FocusScope.of(context).unfocus();
                     },
                     onChanged: (String value) async {
-                      //newTerm.en_term = value;
-                      if (value.length > 2 && _autotranslate) {
-                        _translateFrom(value);
-                      }
-                    },
-                    onSubmitted: (String value) async {
-                      if (value.length <= 2 && _autotranslate) {
-                        _translateFrom(value);
-                      }
+                      _translateFrom(value);
                     },
                   ),
                 ),
@@ -214,7 +199,6 @@ class _TermEditor extends State<TermEditor> {
             onSelected: (EnJaPair? pair) {
               FocusScope.of(context).unfocus();
               if (pair != null) {
-                //newTerm.k_term = pair.k_term;
                 updateReading(pair);
               }
             },
@@ -258,9 +242,6 @@ class _TermEditor extends State<TermEditor> {
             onTapOutside: (event) {
               FocusScope.of(context).unfocus();
             },
-            onChanged: (String value) {
-              //newTerm.reading = value;
-            },
           ),
 
           SizedBox(height: 2),
@@ -268,7 +249,7 @@ class _TermEditor extends State<TermEditor> {
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              _romaji(),
+              _romaji,
               style: JWBTextStyles.newTermRomaji,
             ),
           ),

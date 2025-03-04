@@ -29,7 +29,12 @@ class _PageTranslate extends State<PageTranslate> {
   FocusNode translateEntryFocus = FocusNode();
 
   void _translateFromEn(String en) async {
-    final translations = await DictDatabaseHelper.instance.translateNResults(en, 10);
+    final translations = await DictDatabaseHelper.instance.translateToJaN(en, 10);
+    widget.setTranslationResults(translations);
+  }
+  
+  void _translateFromJa(String ja) async {
+    final translations = await DictDatabaseHelper.instance.translateToEnN(ja, 10);
     widget.setTranslationResults(translations);
   }
 
@@ -44,16 +49,13 @@ class _PageTranslate extends State<PageTranslate> {
             },
 
             child: widget.translationResults.isEmpty ? Container() :
-            // English to Japanese.
-              _enToJa ? ListView(
+              ListView(
                 children: List.generate(widget.translationResults.length, (i) {
                   return TranslateCard(
                       term: widget.translationResults[i]
                   );
                 }),
-              ) :
-              // Japanese to English.
-              Container()
+              )
           )
         ),
 
@@ -94,10 +96,10 @@ class _PageTranslate extends State<PageTranslate> {
                   )
                 ),
                 onChanged: (String val) {
-                  if (val.length > 2) {
-                    if (_enToJa) {
-                      _translateFromEn(val);
-                    }
+                  if (_enToJa) {
+                    _translateFromEn(val);
+                  } else {
+                    _translateFromJa(val);
                   }
                 },
               ),

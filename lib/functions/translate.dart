@@ -52,24 +52,58 @@ class DictDatabaseHelper {
   }
 
   // Get the top n results of translating.
-  Future<List<EnJaPair>> translateNResults(String en_term, int n) async {
-    List<EnJaPair> results = await translate(en_term);
+  Future<List<EnJaPair>> _translateNResults(String term, int n, bool en_to_ja) async {
+    List<EnJaPair> results = en_to_ja ? await translate(term) : await translateJa(term);
     n = n > results.length ? results.length : n;
+    //if (n == 0) { return []; }
     return results.sublist(0, n);
+  }
+  Future<List<EnJaPair>> translateToJaN(String en_term, int n) async {
+    return _translateNResults(en_term, n, true);
+  }
+  Future<List<EnJaPair>> translateToEnN(String ja_term, int n) async {
+    return _translateNResults(ja_term, n, false);
   }
 
   // Takes a string en_term and returns a list of JaEntry matches.
   Future<List<EnJaPair>> translate(String en_term) async {
     // Joins JA_TERMS and EN_TERMS where the enIDs are equal and en value contains en_term.
     // i.e Finds english matches and their related japanese elements.
+
+    //int lastTimeStamp = DateTime.now().millisecondsSinceEpoch;
     Database db = await instance.database;
-    List<dynamic> res = await db.rawQuery('''
+
+    if (en_term.isEmpty) {
+      return [];
+    }
+
+    List<dynamic> res = [];
+
+    res = await db.rawQuery('''
+      SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
+      FROM JA_TERMS ja
+      JOIN EN_TERMS en
+      ON ja.enID = en.enID
+      WHERE (en.value LIKE '%`${en_term.toLowerCase()}%'
+          OR en.value LIKE '% ${en_term.toLowerCase()}%')
+        AND ja.freqGroup IS NOT NULL
+      ORDER BY ja.freqGroup
+      LIMIT 1000
+    ''');
+
+    // If there aren't many results.
+    if (res.length < 10) {
+      res = await db.rawQuery('''
       SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
       FROM JA_TERMS ja
       JOIN EN_TERMS en
       ON ja.enID = en.enID
       WHERE en.value LIKE '%${en_term.toLowerCase()}%'
     ''');
+    }
+
+    //print("Time for long query: ${DateTime.now().millisecondsSinceEpoch - lastTimeStamp}");
+    //lastTimeStamp = DateTime.now().millisecondsSinceEpoch;
 
     // Constructs EnJaPairs from matches.
     List<EnJaPair> matches = res.map((e) {
@@ -85,13 +119,62 @@ class DictDatabaseHelper {
       );
     }).toList();
 
+    //print("Time for pair construction: ${DateTime.now().millisecondsSinceEpoch - lastTimeStamp}");
+    //lastTimeStamp = DateTime.now().millisecondsSinceEpoch;
+
     // Remove non-direct matches ("othello" removed from "hello" results)
     matches.removeWhere((pair) => !pair.isDirectMatch(en_term));
+
+    //print("Time for removing non direct matches: ${DateTime.now().millisecondsSinceEpoch - lastTimeStamp}");
+    //lastTimeStamp = DateTime.now().millisecondsSinceEpoch;
 
     // Sorts the matches by their relevance score (Closer to 1 is earlier).
     List<Tuple2<double, EnJaPair>> tuples = List.generate(matches.length, (index) {
       return Tuple2(scoreMatch(en_term, matches[index]), matches[index]);
     });
+
+    //print("Time for scoring: ${DateTime.now().millisecondsSinceEpoch - lastTimeStamp}");
+    //lastTimeStamp = DateTime.now().millisecondsSinceEpoch;
+
+    tuples.sort((a, b) => b.item1.compareTo(a.item1));
+    List<EnJaPair> sorted = tuples.map((e) => e.item2).toList();
+
+    //print("Time for sorting: ${DateTime.now().millisecondsSinceEpoch - lastTimeStamp}");
+    //lastTimeStamp = DateTime.now().millisecondsSinceEpoch;
+    //print(sorted.length);
+
+    return sorted;
+  }
+
+  Future<List<EnJaPair>> translateJa(String ja_term) async {
+    Database db = await instance.database;
+    List<dynamic> res = await db.rawQuery('''
+      SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
+      FROM JA_TERMS ja
+      JOIN EN_TERMS en
+      ON ja.enID = en.enID
+      WHERE (ja.value LIKE '%$ja_term%'
+          OR ja.reading LIKE '$ja_term%')
+        AND ja.freqGroup IS NOT NULL
+      ORDER BY ja.freqGroup
+      LIMIT 1000
+    ''');
+
+    // Constructs EnJaPairs from matches.
+    List<EnJaPair> matches = res.map((e) {
+      return EnJaPair.fromUnparsedSenses(
+        pri:  e['ja_pri'],
+        k_term:  e['reading'] == null ? null : e['ja_value'],
+        reading: e['reading'] ?? e['ja_value'],
+        unpSenses: e['en_value'],
+        freq_group: e['freq_group']
+      );
+    }).toList();
+
+    List<Tuple2<double, EnJaPair>> tuples = List.generate(matches.length, (index) {
+      return Tuple2(scoreMatch(ja_term, matches[index]), matches[index]);
+    });
+
     tuples.sort((a, b) => b.item1.compareTo(a.item1));
     List<EnJaPair> sorted = tuples.map((e) => e.item2).toList();
 
@@ -155,14 +238,6 @@ class DictDatabaseHelper {
     return unpSenses.split("~").where((sense) => sense.contains(x)).toList();
   }
 
-  /*
-      SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
-      FROM JA_TERMS ja
-      JOIN EN_TERMS en
-      ON ja.enID = en.enID
-      WHERE en.value LIKE '%${en_term.toLowerCase()}%'
-   */
-
   Future<TermEntry> getRandomWord(int seed) async {
     var r = Random(seed);
     int rInt = r.nextInt(1000000);
@@ -178,10 +253,10 @@ class DictDatabaseHelper {
     ''');
     var first = res.first;
     var ej = EnJaPair.fromUnparsedSenses(
-      0,
-      first['reading'] == null ? null : first['ja_value'].toString(),
-      first['reading'] == null ? first['ja_value'].toString() : first['reading'].toString(),
-      first['en_value'].toString(),
+      pri: 0,
+      k_term: first['reading'] == null ? null : first['ja_value'].toString(),
+      reading: first['reading'] == null ? first['ja_value'].toString() : first['reading'].toString(),
+      unpSenses: first['en_value'].toString(),
     );
     return TermEntry.fromEnJaPair(ej);
   }
