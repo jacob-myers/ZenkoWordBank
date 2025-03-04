@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 
+import 'package:kana_kit/kana_kit.dart';
 import 'package:tuple/tuple.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:string_similarity/string_similarity.dart';
@@ -24,6 +25,8 @@ class DictDatabaseHelper {
   double ja_pri_weight = 1;
   double str_sim_weight = 3;
   double freq_weight = 2;
+
+  final _kanaKit = const KanaKit();
 
   DictDatabaseHelper._privateConstructor();
   static final DictDatabaseHelper instance = DictDatabaseHelper._privateConstructor();
@@ -134,19 +137,45 @@ class DictDatabaseHelper {
       return [];
     }
 
+    // Defines the 'where' clause of the SQL query. If it's romaji,
+    // converts to phonetic and looks for it.
+    String where = '''
+      (ja.value LIKE '%$ja_term%'
+        OR ja.reading LIKE '$ja_term%')
+    ''';
+    if (_kanaKit.isRomaji(ja_term)) {
+      where = '''
+        (ja.reading LIKE '${_kanaKit.toHiragana(ja_term)}%'
+          OR ja.reading LIKE '${_kanaKit.toKatakana(ja_term)}%'
+          OR ja.value LIKE '${_kanaKit.toHiragana(ja_term)}%'
+          OR ja.value LIKE '${_kanaKit.toKatakana(ja_term)}%')
+      ''';
+    }
+
     Database db = await instance.database;
 
-    List<dynamic> res = await db.rawQuery('''
+    List<dynamic> res = [];
+    res = await db.rawQuery('''
       SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
       FROM JA_TERMS ja
       JOIN EN_TERMS en
       ON ja.enID = en.enID
-      WHERE (ja.value LIKE '%$ja_term%'
-          OR ja.reading LIKE '$ja_term%')
+      WHERE $where
         AND ja.freqGroup IS NOT NULL
       ORDER BY ja.freqGroup
       LIMIT 1000
     ''');
+
+    // If there aren't many results.
+    if (res.length < 10) {
+      res = await db.rawQuery('''
+      SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
+      FROM JA_TERMS ja
+      JOIN EN_TERMS en
+      ON ja.enID = en.enID
+      WHERE $where
+    ''');
+    }
 
     // Constructs EnJaPairs from matches.
     List<EnJaPair> matches = res.map((e) {
