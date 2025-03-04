@@ -30,10 +30,10 @@ class TermEditor extends StatefulWidget {
 
 class _TermEditor extends State<TermEditor> {
   final _kanaKit = const KanaKit();
+  CancelableOperation? _editingOperation;
   bool _autotranslate = true;
 
   List<EnJaPair> ja_translations = [];
-  CancelableOperation? _editingOperation;
 
   final TextEditingController _englishController = TextEditingController();
   final TextEditingController _dropdownController = TextEditingController();
@@ -60,11 +60,11 @@ class _TermEditor extends State<TermEditor> {
 
   void updateReading(EnJaPair? pair) {
     if (pair == null) {
-      _readingController.value =  TextEditingValue(text: "");
+      _readingController.value =  const TextEditingValue(text: "");
       _romaji = "";
       return;
     }
-    _readingController.value = pair.k_term == null ? TextEditingValue(text: "") :
+    _readingController.value = pair.k_term == null ? const TextEditingValue(text: "") :
     TextEditingValue(
       text: pair.reading,
       selection: TextSelection.fromPosition(
@@ -84,15 +84,11 @@ class _TermEditor extends State<TermEditor> {
       if (ja_translations.isNotEmpty) {
         updateReading(ja_translations.first);
       } else {
-        _dropdownController.value = TextEditingValue(text: "");
+        _dropdownController.value = const TextEditingValue(text: "");
         updateReading(null);
       }
       setState(() {});
     });
-
-
-    //ja_translations = await DictDatabaseHelper.instance.translateToJaN(value, widget.dropdownCount);
-
   }
 
   @override
@@ -113,10 +109,10 @@ class _TermEditor extends State<TermEditor> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           color: JWBColors.txtEntryBG
       ),
-      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
       child: Column(
         children: [
           //SizedBox(height: 30),
@@ -130,7 +126,7 @@ class _TermEditor extends State<TermEditor> {
                     autofocus: true,
                     style: JWBTextStyles.newTermEnglish,
                     maxLines: 1,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
                         ),
@@ -153,7 +149,7 @@ class _TermEditor extends State<TermEditor> {
                     },
                   ),
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 InkWell(
                   child: Container(
                     height: 44,
@@ -185,7 +181,7 @@ class _TermEditor extends State<TermEditor> {
             ),
           ),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           DropdownMenu(
             controller: _dropdownController,
@@ -206,7 +202,7 @@ class _TermEditor extends State<TermEditor> {
                       style: JWBTextStyles.termJapMainDropdown,
                     ),
                     Container(
-                      padding: EdgeInsets.fromLTRB(10, 0, 0, 5),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 5),
                       child: Text(
                         pair.en_term,
                         style: JWBTextStyles.termJapMainDropdownDefinition,
@@ -222,10 +218,10 @@ class _TermEditor extends State<TermEditor> {
                 updateReading(pair);
               }
             },
-            menuStyle: MenuStyle(
+            menuStyle: const MenuStyle(
               backgroundColor: WidgetStatePropertyAll(JWBColors.newTermDropdownBackground)
             ),
-            inputDecorationTheme: InputDecorationTheme(
+            inputDecorationTheme: const InputDecorationTheme(
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
               ),
@@ -238,13 +234,13 @@ class _TermEditor extends State<TermEditor> {
             ),
           ),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           TextField(
             controller: _readingController,
             style: JWBTextStyles.newTermReading,
             maxLines: 1,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
               ),
@@ -264,7 +260,7 @@ class _TermEditor extends State<TermEditor> {
             },
           ),
 
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
 
           Container(
             alignment: Alignment.centerLeft,
@@ -274,7 +270,7 @@ class _TermEditor extends State<TermEditor> {
             ),
           ),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           Row(
             children: [
@@ -283,15 +279,15 @@ class _TermEditor extends State<TermEditor> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Cancel"),
-                  style: ButtonStyle(
+                  style: const ButtonStyle(
                     textStyle: WidgetStatePropertyAll(JWBTextStyles.newTermButton),
                     backgroundColor: WidgetStatePropertyAll(JWBColors.newTermButtonCancel),
                     foregroundColor: WidgetStatePropertyAll(JWBColors.entryTextMain),
                   ),
+                  child: const Text("Cancel"),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: TextButton(
                   onPressed: () {
@@ -310,7 +306,7 @@ class _TermEditor extends State<TermEditor> {
                       Navigator.pop(context);
                     }
                   },
-                  style: ButtonStyle(
+                  style: const ButtonStyle(
                     textStyle: WidgetStatePropertyAll(JWBTextStyles.newTermButton),
                     backgroundColor: WidgetStatePropertyAll(JWBColors.newTermButtonConfirm),
                     foregroundColor: WidgetStatePropertyAll(JWBColors.entryTextMain),
@@ -322,7 +318,6 @@ class _TermEditor extends State<TermEditor> {
           )
         ],
       ),
-
     );
   }
 }
