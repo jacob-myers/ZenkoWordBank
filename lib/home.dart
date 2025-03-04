@@ -30,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onPageChange (int index) {
+    FocusScope.of(context).unfocus();
     setState(() {
       _selectedIndex = index;
     });
