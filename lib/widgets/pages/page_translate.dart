@@ -130,6 +130,8 @@ class _PageTranslate extends State<PageTranslate> {
                       onPressed: () {
                         setState(() {
                           _enToJa = !_enToJa;
+                          widget.controller.value = const TextEditingValue(text: '');
+                          _translateFromEn("");
                         });
                       },
                       icon: Icon(Icons.swap_horiz)
