@@ -28,10 +28,12 @@ The words bank is where the user's words are displayed and can be searched. The 
 
 <img src="examples/words_1.jpg" alt="words_1" width="200"/>
 
-<img src="examples/words_search1.jpg" alt="words_search1" width="150"/>
-<img src="examples/words_search2.jpg" alt="words_search2" width="150"/>
-<img src="examples/words_search3.jpg" alt="words_search3" width="150"/>
-<img src="examples/words_search4.jpg" alt="words_search4" width="150"/>
+<p>
+<img src="examples/words_search1.jpg" alt="words_search1" width="180"/>
+<img src="examples/words_search2.jpg" alt="words_search2" width="180"/>
+<img src="examples/words_search3.jpg" alt="words_search3" width="180"/>
+<img src="examples/words_search4.jpg" alt="words_search4" width="180"/>
+</p>
 
 #### Editor
 The editor is what the user is confronted with whenever they go to add a new word to their bank or edit an existing one. The editor has an entry for English, Kanji, and a reading element (Hirigana or Katakana). The button in the upper right is the toggle for auto-translator. It is on by default for entering new terms, and off by default when editing an existing term.
@@ -40,13 +42,17 @@ As the user types in an English term (if auto-translate is on) it will attempt t
 
 <img src="examples/editor_1.jpg" alt="editor_1" width="200"/>
 
-<img src="examples/editor_2.jpg" alt="editor_2" width="150"/>
-<img src="examples/editor_3.jpg" alt="editor_3" width="150"/>
-<img src="examples/editor_4.jpg" alt="editor_4" width="150"/>
+<p>
+<img src="examples/editor_2.jpg" alt="editor_2" width="180"/>
+<img src="examples/editor_3.jpg" alt="editor_3" width="180"/>
+<img src="examples/editor_4.jpg" alt="editor_4" width="180"/>
+</p>
 
-<img src="examples/editor_5.jpg" alt="editor_5" width="150"/>
-<img src="examples/editor_6.jpg" alt="editor_6" width="150"/>
-<img src="examples/editor_7.jpg" alt="editor_7" width="150"/>
+<p>
+<img src="examples/editor_5.jpg" alt="editor_5" width="180"/>
+<img src="examples/editor_6.jpg" alt="editor_6" width="180"/>
+<img src="examples/editor_7.jpg" alt="editor_7" width="180"/>
+</p>
 
 #### Translator
 Very similar to the auto-translate tool in the editor, this uses the same algorithm to help find a word/term the user is looking for. It's a better interface for translating, and is able to display more information. The user can also use the button on any card to open it in the editor and add it to their bank.
@@ -55,6 +61,8 @@ The translator is also capable of translating from Japanese to English. It can t
 
 <img src="examples/translator_1.jpg" alt="editor_1" width="200"/>
 
-<img src="examples/translator_2.jpg" alt="editor_2" width="150"/>
-<img src="examples/translator_3.jpg" alt="editor_3" width="150"/>
-<img src="examples/translator_4.jpg" alt="editor_4" width="150"/>
+<p>
+<img src="examples/translator_2.jpg" alt="editor_2" width="180"/>
+<img src="examples/translator_3.jpg" alt="editor_3" width="180"/>
+<img src="examples/translator_4.jpg" alt="editor_4" width="180"/>
+</p>
