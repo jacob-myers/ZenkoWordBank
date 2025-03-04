@@ -34,9 +34,9 @@ class _TermCard extends State<TermCard> {
   Widget build(BuildContext context) {
 
     return Card(
-      margin: EdgeInsets.fromLTRB(5, 5, 5, 2),
+      margin: const EdgeInsets.fromLTRB(5, 5, 5, 2),
       child: Container(
-        padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         decoration: BoxDecoration(
           color: JWBColors.entryBackground,
           borderRadius: BorderRadius.circular(8),
