@@ -1,7 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import 'classes/term_entry.dart';
+// Local
+import 'package:japanese_word_bank/classes/term_entry.dart';
 
 class WordsDatabaseHelper {
   WordsDatabaseHelper._privateConstructor();

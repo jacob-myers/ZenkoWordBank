@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:xml/xml.dart' as xml;
 
+// WILL OVERRIDE jmedict.db IN ASSETS, CRUCIAL TO APP TRANSLATION FUNCTIONALITY.
+// Converts ./lib/data/JMdict_e.xml to a sqlite database in ./assets/jmedict.db
 void main() async {
   print('Using sqlite3 ${sqlite3.version}');
 
@@ -11,7 +13,8 @@ void main() async {
   final contents = await file.readAsString();
   final document = xml.XmlDocument.parse(contents);
 
-  final dbFilePath_k = 'jmedict_k_dhasjd.db';
+  // Builds the dictionary database in the assets folder (THIS WILL OVERRIDE WHAT IS THERE).
+  final dbFilePath_k = './assets/jmedict.db';
   final db_k = sqlite3.open(dbFilePath_k);
 
   // If tables exist, empty them, if they don't exist, init them.

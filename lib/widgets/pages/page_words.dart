@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Local
-import 'package:japanese_word_bank/persistence.dart';
+import 'package:japanese_word_bank/functions/persistence.dart';
 import 'package:japanese_word_bank/functions/search.dart';
 import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/widgets/term_card.dart';

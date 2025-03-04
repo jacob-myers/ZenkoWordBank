@@ -6,7 +6,7 @@ import 'package:kana_kit/kana_kit.dart';
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/functions/translate.dart';
-import 'package:japanese_word_bank/persistence.dart';
+import 'package:japanese_word_bank/functions/persistence.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
