@@ -26,7 +26,7 @@ The home screen provides a word of the day, randomly generated from common Japan
 <img src="examples/home.jpg" alt="home" width="200"/>
 
 #### Bank
-The words bank is where the user's words are displayed and can be searched. The search algorithm can match any of the elements (English, Kanji, Reading, Romaji). New elements can be added by clicking the add button.
+The Words bank is where the user's words are displayed and can be searched. The search algorithm can match any of the elements of each term (English, Kanji, Reading, Romaji). New terms can be added by clicking the add button.
 
 <img src="examples/words_1.jpg" alt="words_1" width="200"/>
 
