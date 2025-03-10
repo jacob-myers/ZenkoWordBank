@@ -38,7 +38,7 @@ class EnJaPair {
   }
 
   String get romaji {
-    return _kanaKit.toRomaji(reading);
+    return _kanaKit.toRomaji(reading).replaceAll("'", "");
   }
 
   @override
