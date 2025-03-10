@@ -238,28 +238,43 @@ class _TermEditor extends State<TermEditor> {
 
           const SizedBox(height: 10),
 
-          TextField(
-            controller: _readingController,
-            style: JWBTextStyles.newTermReading,
-            maxLines: 1,
-            decoration: const InputDecoration(
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _readingController,
+                  style: JWBTextStyles.newTermReading,
+                  maxLines: 1,
+                  decoration: const InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: JWBColors.txtEntryUnfocused, width: 2),
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+                      ),
+                      hintStyle: TextStyle(
+                          color: JWBColors.txtEntryUnfocused
+                      ),
+                      hintText: "Reading..."
+                  ),
+                  onTapOutside: (event) {
+                    FocusScope.of(context).unfocus();
+                  },
+                ),
               ),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
+
+              IconButton(
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                icon: const Icon(Icons.upgrade_outlined, size: 40,),
+                onPressed: () {
+                  _dropdownController.value = _readingController.value;
+                  _readingController.clear();
+                },
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: JWBColors.txtEntryFocused, width: 2),
-              ),
-              hintStyle: TextStyle(
-                  color: JWBColors.txtEntryUnfocused
-              ),
-              hintText: "Reading..."
-            ),
-            onTapOutside: (event) {
-              FocusScope.of(context).unfocus();
-            },
+            ],
           ),
 
           const SizedBox(height: 2),
