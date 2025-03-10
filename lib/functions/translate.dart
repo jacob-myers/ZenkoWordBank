@@ -122,7 +122,7 @@ class DictDatabaseHelper {
 
     // Sorts the matches by their relevance score (Closer to 1 is earlier).
     List<Tuple2<double, EnJaPair>> tuples = List.generate(matches.length, (index) {
-      return Tuple2(scoreMatch(en_term, matches[index]), matches[index]);
+      return Tuple2(scoreEnMatch(en_term, matches[index]), matches[index]);
     });
 
     tuples.sort((a, b) => b.item1.compareTo(a.item1));
@@ -189,7 +189,7 @@ class DictDatabaseHelper {
     }).toList();
 
     List<Tuple2<double, EnJaPair>> tuples = List.generate(matches.length, (index) {
-      return Tuple2(scoreMatch(ja_term, matches[index]), matches[index]);
+      return Tuple2(scoreJaMatch(ja_term, matches[index]), matches[index]);
     });
 
     tuples.sort((a, b) => b.item1.compareTo(a.item1));
@@ -198,8 +198,18 @@ class DictDatabaseHelper {
     return sorted;
   }
 
+  // Score a match with a pair + an English string.
+  double scoreEnMatch(String en_term, EnJaPair pair) {
+    return _scoreMatch(en_term, pair, true);
+  }
+
+  // Score a match with a pair + a Japanese string.
+  double scoreJaMatch(String ja_term, EnJaPair pair) {
+    return _scoreMatch(ja_term, pair, false);
+  }
+
   // Calculates the relevance of the pair to the en_term.
-  double scoreMatch(String en_term, EnJaPair pair) {
+  double _scoreMatch(String term, EnJaPair pair, bool en) {
 
     /*
     matches = [EnJaPair, EnJaPair, ...]
@@ -208,7 +218,8 @@ class DictDatabaseHelper {
     EnJaPair.en_senses = [Sense, Sense, Sense]
     Sense.pri -> EN PRI (Originating from <misc> tags)
 
-    StringLikeness(Related gloss in Sense.glosses, en_term) -> SIMILARITY
+    en - StringLikeness(Related gloss in Sense.glosses, en_term) -> SIMILARITY
+    !en - StringLikeness(Term compared to each japanese writing of term) -> SIMILARITY
 
     EnJaPair.freq_group -> FREQ GROUP
 
@@ -224,10 +235,19 @@ class DictDatabaseHelper {
 
     // Max similarity of each gloss of each sense in pair.
     //double str_sim = pair.en_senses.map((e) => e.glosses.map((g) => g.similarityTo(en_term)).max).max;
-    RegExp parenMatcher = RegExp(r'\(.*?\)');
-    double str_sim = pair.en_senses.map((e) => e.glosses.map((g) {
-      return g.replaceAll(parenMatcher, "").similarityTo(en_term);
-    }).max).max;
+
+    double str_sim;
+    if (en) {
+      RegExp parenMatcher = RegExp(r'\(.*?\)');
+      str_sim = pair.en_senses.map((e) => e.glosses.map((g) {
+        return g.replaceAll(parenMatcher, "").similarityTo(term);
+      }).max).max;
+    } else {
+      str_sim = [pair.reading, pair.k_term, pair.romaji].map((e) {
+        return e.similarityTo(term);
+      }).max;
+    }
+
 
     // Freq group if exists, otherwise 49 (off the end).
     double freq_group = (pair.freq_group ?? freq_max).toDouble();
