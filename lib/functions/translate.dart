@@ -233,9 +233,6 @@ class DictDatabaseHelper {
     double ja_pri = pair.pri.toDouble();
     double en_pri = pair.en_senses.map((e) => e.pri).max.toDouble();
 
-    // Max similarity of each gloss of each sense in pair.
-    //double str_sim = pair.en_senses.map((e) => e.glosses.map((g) => g.similarityTo(en_term)).max).max;
-
     double str_sim;
     if (en) {
       RegExp parenMatcher = RegExp(r'\(.*?\)');
@@ -247,7 +244,6 @@ class DictDatabaseHelper {
         return e.similarityTo(term);
       }).max;
     }
-
 
     // Freq group if exists, otherwise 49 (off the end).
     double freq_group = (pair.freq_group ?? freq_max).toDouble();
