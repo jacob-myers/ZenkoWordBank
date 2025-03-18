@@ -43,6 +43,12 @@ class EnJaPair {
 
   @override
   String toString() {
-    return "$k_term ($freq_group, $pri): $en_senses";
+    String ret;
+    if (k_term != null) {
+      ret = '${k_term!} ($reading - $romaji)';
+    } else {
+      ret = '$reading - $romaji';
+    }
+    return '$ret [pri: $pri, freq: $freq_group]: $en_senses';
   }
 }
