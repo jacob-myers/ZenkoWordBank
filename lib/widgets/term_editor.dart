@@ -38,8 +38,18 @@ class _TermEditor extends State<TermEditor> {
   final TextEditingController _englishController = TextEditingController();
   final TextEditingController _dropdownController = TextEditingController();
   final TextEditingController _readingController = TextEditingController();
-  String _romaji = "";
 
+  // Gets the romaji representation of the current term.
+  String get _romaji {
+    if (_readingController.value.text.isNotEmpty) {
+      return _kanaKit.toRomaji(_readingController.value.text);
+    } else if (_dropdownController.value.text.isNotEmpty) {
+      return _kanaKit.toRomaji(_dropdownController.value.text);
+    }
+    return "";
+  }
+
+  // Generates a TermEntry from the currently filled in data.
   TermEntry? _newTerm() {
     // No english entry or reading and dropdown are blank
     if (_englishController.value.text == "" || (_dropdownController.value.text == "" && _readingController.value.text == "")) {
@@ -58,10 +68,10 @@ class _TermEditor extends State<TermEditor> {
     );
   }
 
+  // Updates the
   void updateReading(EnJaPair? pair) {
     if (pair == null) {
       _readingController.value =  const TextEditingValue(text: "");
-      _romaji = "";
       return;
     }
     _readingController.value = pair.k_term == null ? const TextEditingValue(text: "") :
@@ -71,7 +81,6 @@ class _TermEditor extends State<TermEditor> {
         TextPosition(offset: pair.reading.length),
       ),
     );
-    _romaji = _kanaKit.toRomaji(pair.reading);
   }
 
   void _translateFrom(String value) async {
@@ -270,8 +279,10 @@ class _TermEditor extends State<TermEditor> {
                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
                 icon: const Icon(Icons.upgrade_outlined, size: 40,),
                 onPressed: () {
-                  _dropdownController.value = _readingController.value;
-                  _readingController.clear();
+                  if (_readingController.value.text.isNotEmpty) {
+                    _dropdownController.value = _readingController.value;
+                    _readingController.clear();
+                  }
                 },
               ),
             ],
