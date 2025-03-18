@@ -22,6 +22,8 @@ class _PageWords extends State<PageWords> {
 
   late Future<List<TermEntry>> _entries;
 
+  FocusNode _focusNode = FocusNode();
+
   void _refreshTerms() async {
     _entries = WordsDatabaseHelper.instance.getTerms();
     setState(() {});
@@ -75,6 +77,8 @@ class _PageWords extends State<PageWords> {
               Expanded(
                 child: TextField(
                   controller: _searchController,
+                  focusNode: _focusNode,
+                  showCursor: _focusNode.hasFocus,
                   onChanged: (String val) { setState(() {}); },
                   style: const TextStyle(
                     fontSize: 20,
@@ -102,6 +106,7 @@ class _PageWords extends State<PageWords> {
                 padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
                 icon: const Icon(Icons.add_box_rounded, size: 40,),
                 onPressed: () {
+                  _focusNode.unfocus();
                   showDialog(
                     context: context,
                     builder: (context) {
