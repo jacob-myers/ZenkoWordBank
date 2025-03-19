@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.japanese_word_bank"
+    namespace = "com.jakemyers.japanese_word_bank"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
