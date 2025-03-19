@@ -91,6 +91,7 @@ class _TermEditor extends State<TermEditor> {
     _editingOperation!.value.then((result) {
       ja_translations = result;
       if (ja_translations.isNotEmpty) {
+        _dropdownController.value = TextEditingValue(text: ja_translations.first.ja_term);
         updateReading(ja_translations.first);
       } else {
         _dropdownController.value = const TextEditingValue(text: "");
