@@ -37,6 +37,11 @@ class JWBColors {
   static const autotranslateDisabledBG = Color(0xFF232323);
 
   static const translateResultBackground = Color(0xFF676767);
+
+  static const sortButtonsSelected = Color(0xFFFFFFFF);
+  static const sortButtonsUnSelected = Color(0xFFA8A8A8);
+  static const sortButtonsSelectedBG = Color(0x32FFFFFF);
+  static const sortButtonsSelectedBorder = Color(0xFFA5A5A5);
 }
 
 class JWBGradients {
