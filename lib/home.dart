@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   PageController pc = PageController(initialPage: 1);
   final _translateController = TextEditingController();
   List<EnJaPair> translationResults = [];
+  final List<bool> selectedSort = [true, false, false, false];
 
   int _selectedIndex = 1;
   void _onNavbarItemTapped (int index) {
@@ -56,7 +57,17 @@ class _MyHomePageState extends State<MyHomePage> {
             controller: pc,
             onPageChanged: _onPageChange,
             children: [
-              PageWords(),
+              PageWords(
+                selectedSort: selectedSort,
+                setSort: (int index) {
+                  setState(() {
+                    for (int i = 0; i < selectedSort.length; i++) {
+                      selectedSort[i] = i == index;
+                    }
+                  });
+                },
+
+              ),
               PageHome(
                 navigateToPageN: _onNavbarItemTapped,
               ),
@@ -122,8 +133,8 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           String en = "teacher";
-          List<EnJaPair> res = await DatabaseHelper.instance.translateToJaN(en, 10);
-          print(en);
+          List<EnJaPair> res = await DictDatabaseHelper.instance.translateToJaN(en, 10);
+          print("English: $en");
           res.forEach(print);
         }
       ),
