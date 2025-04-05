@@ -144,11 +144,15 @@ class DictDatabaseHelper {
         OR ja.reading LIKE '$ja_term%')
     ''';
     if (_kanaKit.isRomaji(ja_term)) {
+      String h = _kanaKit.toHiragana(ja_term);
+      h = h.split('').where((e) => _kanaKit.isHiragana(e)).join();
+      String k = _kanaKit.toKatakana(h);
+      ja_term = _kanaKit.toRomaji(h);
       where = '''
-        (ja.reading LIKE '${_kanaKit.toHiragana(ja_term)}%'
-          OR ja.reading LIKE '${_kanaKit.toKatakana(ja_term)}%'
-          OR ja.value LIKE '${_kanaKit.toHiragana(ja_term)}%'
-          OR ja.value LIKE '${_kanaKit.toKatakana(ja_term)}%')
+        (ja.reading LIKE '$h%'
+          OR ja.reading LIKE '$k%'
+          OR ja.value LIKE '$h%'
+          OR ja.value LIKE '$k%')
       ''';
     }
 
