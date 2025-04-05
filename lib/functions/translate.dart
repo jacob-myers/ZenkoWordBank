@@ -80,6 +80,7 @@ class DictDatabaseHelper {
     Database db = await instance.database;
 
     List<dynamic> res = [];
+    en_term = en_term.replaceAll("'", "''");
     res = await db.rawQuery('''
       SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
       FROM JA_TERMS ja
@@ -136,6 +137,9 @@ class DictDatabaseHelper {
     if (ja_term.isEmpty) {
       return [];
     }
+
+    // Replace ' with '' to escape a single quote in SQL queries.
+    ja_term = ja_term.replaceAll("'", "''");
 
     // Defines the 'where' clause of the SQL query. If it's romaji,
     // converts to phonetic and looks for it.
