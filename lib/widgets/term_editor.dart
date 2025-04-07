@@ -215,10 +215,19 @@ class _TermEditor extends State<TermEditor> {
                     ),
                     Container(
                       padding: const EdgeInsets.fromLTRB(10, 0, 0, 5),
-                      child: Text(
-                        pair.en_term,
-                        style: JWBTextStyles.termJapMainDropdownDefinition,
-                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            pair.k_term != null ? " ${pair.reading} ${pair.romaji}" : " ${pair.romaji}",
+                            style: JWBTextStyles.termJapMainDropdownDefinition,
+                          ),
+                          Text(
+                            pair.en_term,
+                            style: JWBTextStyles.termJapMainDropdownDefinition,
+                          ),
+                        ],
+                      )
                     )
                   ],
                 )
