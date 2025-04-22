@@ -13,12 +13,16 @@ class PageTranslate extends StatefulWidget {
   TextEditingController controller;
   List<EnJaPair> translationResults;
   Function(List<EnJaPair>) setTranslationResults;
+  bool enToJa;
+  Function(bool) setEnToJa;
 
   PageTranslate({
     super.key,
     required this.controller,
     required this.translationResults,
     required this.setTranslationResults,
+    required this.enToJa,
+    required this.setEnToJa,
   });
 
   @override
@@ -26,7 +30,6 @@ class PageTranslate extends StatefulWidget {
 }
 
 class _PageTranslate extends State<PageTranslate> {
-  bool _enToJa = true;
   FocusNode translateEntryFocus = FocusNode();
   CancelableOperation? _editingOperation;
 
@@ -111,7 +114,7 @@ class _PageTranslate extends State<PageTranslate> {
                   )
                 ),
                 onChanged: (String val) {
-                  if (_enToJa) {
+                  if (widget.enToJa) {
                     _translateFromEn(val);
                   } else {
                     _translateFromJa(val);
@@ -122,7 +125,7 @@ class _PageTranslate extends State<PageTranslate> {
                 children: [
                   Expanded(
                     child: Text(
-                      _enToJa ? "English" : "Japanese",
+                      widget.enToJa ? "English" : "Japanese",
                       textAlign: TextAlign.right,
                     ),
                   ),
@@ -130,7 +133,7 @@ class _PageTranslate extends State<PageTranslate> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        _enToJa = !_enToJa;
+                        widget.setEnToJa(!widget.enToJa);
                         widget.controller.value = const TextEditingValue(text: '');
                         _translateFromEn("");
                       });
@@ -141,7 +144,7 @@ class _PageTranslate extends State<PageTranslate> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      _enToJa ? "Japanese" : "English",
+                      widget.enToJa ? "Japanese" : "English",
                       textAlign: TextAlign.left,
                     ),
                   )

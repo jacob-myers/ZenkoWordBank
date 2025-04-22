@@ -27,6 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _translateController = TextEditingController();
   List<EnJaPair> translationResults = [];
   final List<bool> selectedSort = [true, false, false, false];
+  bool translatorEnToJa = true;
 
   int _selectedIndex = 1;
   void _onNavbarItemTapped (int index) {
@@ -72,6 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 navigateToPageN: _onNavbarItemTapped,
               ),
               PageTranslate(
+                enToJa: translatorEnToJa,
+                setEnToJa: (bool newVal) {
+                  translatorEnToJa = newVal;
+                },
                 controller: _translateController,
                 translationResults: translationResults,
                 setTranslationResults: (List<EnJaPair> res) {
