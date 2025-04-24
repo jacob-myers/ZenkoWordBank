@@ -1,7 +1,7 @@
 import 'package:japanese_word_bank/classes/term_entry.dart';
 import 'package:japanese_word_bank/classes/trie.dart';
 
-var wordSplit = RegExp(" +");
+var wordSplit = RegExp(r"[ /]+");
 
 Set<T> intersect<T>(Set<T> a, Set<T> b) {
   a.retainAll(b);
