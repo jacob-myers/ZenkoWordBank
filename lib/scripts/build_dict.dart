@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:sqlite3/sqlite3.dart';
 import 'package:xml/xml.dart' as xml;
+import 'package:kana_kit/kana_kit.dart';
 
 // WILL OVERRIDE jmedict.db IN ASSETS, CRUCIAL TO APP TRANSLATION FUNCTIONALITY.
 // Converts ./lib/data/JMdict_e.xml to a sqlite database in ./assets/jmedict.db
@@ -14,7 +15,7 @@ void main() async {
   final document = xml.XmlDocument.parse(contents);
 
   // Builds the dictionary database in the assets folder (THIS WILL OVERRIDE WHAT IS THERE).
-  final dbFilePath_k = './assets/jmedict.db';
+  final dbFilePath_k = './assets/jmedict_3.db';
   final db_k = sqlite3.open(dbFilePath_k);
 
   // If tables exist, empty them, if they don't exist, init them.
@@ -29,12 +30,13 @@ void main() async {
   /*
   // Selects all from the database.
   final resk = db_k.select('''
-    SELECT ja.pri as ja_pri, ja.freqGroup as freq_group, ja.value as ja_value, ja.reading as ja_reading, en.value as en_value
+    SELECT ja.pri as ja_pri, ja.freqGroup as freq_group, ja.value as ja_value, ja.reading as ja_reading, ja.romaji as romaji, en.value as en_value
     FROM JA_TERMS ja
     JOIN EN_TERMS en
     ON ja.enID = en.enID
   ''');
   print(resk.length);
+  resk.forEach(print);
   */
 }
 
@@ -90,6 +92,8 @@ RegExp freqGroupMatch = RegExp(r"nf[0-9][0-9]");  // Groups: 01-48
 // Build a database attempting to shrink data set.
 //! Excludes reading elements as separate rows when they have a related Kanji element.
 void read_xml_and_build_db_exclude_rel(Database db, xml.XmlDocument doc) {
+  KanaKit k = KanaKit();
+
   final insertEnglish = db.prepare('''
     INSERT INTO EN_TERMS
     (value)
@@ -98,8 +102,8 @@ void read_xml_and_build_db_exclude_rel(Database db, xml.XmlDocument doc) {
 
   final insertJapanese = db.prepare('''
     INSERT INTO JA_TERMS
-    (value, reading, pri, freqGroup, enID)
-    VALUES (?, ?, ?, ?, ?)
+    (value, reading, romaji, pri, freqGroup, enID)
+    VALUES (?, ?, ?, ?, ?, ?)
   ''');
 
   final entries = doc.findAllElements('entry');
@@ -250,14 +254,19 @@ void read_xml_and_build_db_exclude_rel(Database db, xml.XmlDocument doc) {
 
     if (uk || (rebs.isNotEmpty && kebs.isEmpty)) {
       for (final reb in rebs) {
-        insertJapanese.execute([reb[0], null, reb[1], reb[2], enID]);
+        String romaji = k.toRomaji(reb[0]);
+        if (!k.isRomaji(romaji)) {
+          print(romaji);
+        }
+        insertJapanese.execute([reb[0], null, k.isRomaji(romaji) ? romaji : null, reb[1], reb[2], enID]);
       }
     }
     if (kebs.isNotEmpty) {
       for (final keb in kebs) {
         if (possibleReadings[keb[0]]!.isNotEmpty) {
           final String best_reb = possibleReadings[keb[0]]!.reduce((a, b) => readingPri[a]! > readingPri[b]! ? a : b);
-          insertJapanese.execute([keb[0], best_reb, keb[1], keb[2], enID]);
+          String romaji = k.toRomaji(best_reb);
+          insertJapanese.execute([keb[0], best_reb, k.isRomaji(romaji) ? romaji : null, keb[1], keb[2], enID]);
         }
       }
     }
@@ -316,6 +325,7 @@ void initTables(Database db) {
       jaID INTEGER PRIMARY KEY,
       value TEXT,
       reading TEXT,
+      romaji TEXT,
       pri INTEGER,
       freqGroup INTEGER,
       enID INTEGER,
