@@ -75,7 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
               PageTranslate(
                 enToJa: translatorEnToJa,
                 setEnToJa: (bool newVal) {
-                  translatorEnToJa = newVal;
+                  setState(() {
+                    translatorEnToJa = newVal;
+                  });
                 },
                 controller: _translateController,
                 translationResults: translationResults,

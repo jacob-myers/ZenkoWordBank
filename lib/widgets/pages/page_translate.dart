@@ -31,7 +31,6 @@ class PageTranslate extends StatefulWidget {
 
 class _PageTranslate extends State<PageTranslate> {
   FocusNode translateEntryFocus = FocusNode();
-  CancelableOperation? _editingOperation;
   DateTime _mostRecentCall = DateTime.now();
 
   Future<void> _translateFromEn(String en, DateTime stamp) async {
