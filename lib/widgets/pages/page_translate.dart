@@ -32,25 +32,24 @@ class PageTranslate extends StatefulWidget {
 class _PageTranslate extends State<PageTranslate> {
   FocusNode translateEntryFocus = FocusNode();
   CancelableOperation? _editingOperation;
+  DateTime _mostRecentCall = DateTime.now();
 
-  Future<void> _translateFromEn(String en) async {
-    _editingOperation?.cancel();
-    _editingOperation = CancelableOperation.fromFuture(
-        DictDatabaseHelper.instance.translateToJaN(en, 10),
-    );
-    _editingOperation!.value.then((result) {
-      widget.setTranslationResults(result);
-    });
+  Future<void> _translateFromEn(String en, DateTime stamp) async {
+    await Future.delayed(const Duration(milliseconds: 250));
+    if (stamp == _mostRecentCall) {
+      DictDatabaseHelper.instance.translateToJaN(en, 10).then((result) {
+        widget.setTranslationResults(result);
+      });
+    }
   }
   
-  Future<void> _translateFromJa(String ja) async {
-    _editingOperation?.cancel();
-    _editingOperation = CancelableOperation.fromFuture(
-        DictDatabaseHelper.instance.translateToEnN(ja, 10),
-    );
-    _editingOperation!.value.then((result) {
-      widget.setTranslationResults(result);
-    });
+  Future<void> _translateFromJa(String ja, DateTime stamp) async {
+    await Future.delayed(const Duration(milliseconds: 250));
+    if (stamp == _mostRecentCall) {
+      DictDatabaseHelper.instance.translateToEnN(ja, 10).then((result) {
+        widget.setTranslationResults(result);
+      });
+    }
   }
 
   @override
@@ -114,10 +113,11 @@ class _PageTranslate extends State<PageTranslate> {
                   )
                 ),
                 onChanged: (String val) {
+                  _mostRecentCall = DateTime.now();
                   if (widget.enToJa) {
-                    _translateFromEn(val);
+                    _translateFromEn(val, _mostRecentCall);
                   } else {
-                    _translateFromJa(val);
+                    _translateFromJa(val, _mostRecentCall);
                   }
                 },
               ),
@@ -135,7 +135,7 @@ class _PageTranslate extends State<PageTranslate> {
                       setState(() {
                         widget.setEnToJa(!widget.enToJa);
                         widget.controller.value = const TextEditingValue(text: '');
-                        _translateFromEn("");
+                        _translateFromEn("", DateTime.now());
                       });
                     },
                     icon: const Icon(Icons.swap_horiz)

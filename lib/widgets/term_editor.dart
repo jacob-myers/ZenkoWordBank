@@ -30,8 +30,8 @@ class TermEditor extends StatefulWidget {
 
 class _TermEditor extends State<TermEditor> {
   final _kanaKit = const KanaKit();
-  CancelableOperation? _editingOperation;
   bool _autotranslate = true;
+  DateTime _mostRecentCall = DateTime.now();
 
   List<EnJaPair> ja_translations = [];
 
@@ -83,12 +83,32 @@ class _TermEditor extends State<TermEditor> {
     );
   }
 
-  void _translateFrom(String value) async {
+  void _translateFrom(String value, DateTime stamp) async {
+
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    if (stamp == _mostRecentCall) {
+      DictDatabaseHelper.instance.translateToJaN(value, widget.dropdownCount).then((result) {
+        ja_translations = result;
+        if (ja_translations.isNotEmpty) {
+          _dropdownController.value = TextEditingValue(text: ja_translations.first.ja_term);
+          updateReading(ja_translations.first);
+        } else {
+          _dropdownController.value = const TextEditingValue(text: "");
+          updateReading(null);
+        }
+        setState(() {});
+      });
+    }
+
+    /*
     _editingOperation?.cancel();
+    //print(_editingOperation?.isCanceled);
     _editingOperation = CancelableOperation.fromFuture(
       DictDatabaseHelper.instance.translateToJaN(value, widget.dropdownCount)
     );
     _editingOperation!.value.then((result) {
+      print('hit');
       ja_translations = result;
       if (ja_translations.isNotEmpty) {
         _dropdownController.value = TextEditingValue(text: ja_translations.first.ja_term);
@@ -99,6 +119,7 @@ class _TermEditor extends State<TermEditor> {
       }
       setState(() {});
     });
+    */
   }
 
   @override
@@ -156,7 +177,8 @@ class _TermEditor extends State<TermEditor> {
                     },
                     onChanged: (String value) async {
                       if (_autotranslate) {
-                        _translateFrom(value);
+                        _mostRecentCall = DateTime.now();
+                        _translateFrom(value, _mostRecentCall);
                       }
                     },
                   ),
@@ -184,7 +206,8 @@ class _TermEditor extends State<TermEditor> {
                     setState(() {
                       _autotranslate = !_autotranslate;
                       if (_autotranslate) {
-                        _translateFrom(_englishController.value.text);
+                        _mostRecentCall = DateTime.now();
+                        _translateFrom(_englishController.value.text, _mostRecentCall);
                       }
                     });
                   },

@@ -82,6 +82,21 @@ class DictDatabaseHelper {
     List<dynamic> res = [];
     en_term = en_term.replaceAll("'", "''");
     res = await db.rawQuery('''
+      SELECT *
+      FROM (
+        SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
+        FROM JA_TERMS ja
+        JOIN EN_TERMS en
+        ON ja.enID = en.enID
+        WHERE en.value LIKE '%${en_term.toLowerCase()}%'
+        LIMIT 1000
+      )
+      ORDER BY freq_group
+    ''');
+
+    /*
+    // Looks for entries where freq group is non null first. then if not enough, does a new query.
+    res = await db.rawQuery('''
       SELECT ja.pri as ja_pri, ja.value as ja_value, ja.reading as reading, en.value as en_value, ja.freqGroup as freq_group
       FROM JA_TERMS ja
       JOIN EN_TERMS en
@@ -103,6 +118,7 @@ class DictDatabaseHelper {
       WHERE en.value LIKE '%${en_term.toLowerCase()}%'
     ''');
     }
+    */
 
     // Constructs EnJaPairs from matches.
     List<EnJaPair> matches = res.map((e) {
@@ -129,6 +145,7 @@ class DictDatabaseHelper {
     tuples.sort((a, b) => b.item1.compareTo(a.item1));
     List<EnJaPair> sorted = tuples.map((e) => e.item2).toList();
 
+    //print('hit');
     return sorted;
   }
 
