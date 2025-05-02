@@ -53,6 +53,8 @@ dependencies:
   tuple: ^2.0.2
   # For kana/kanji tools.
   kana_kit: ^2.1.1
+  # For database version control.
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

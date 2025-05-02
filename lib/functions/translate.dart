@@ -9,8 +9,10 @@ import 'package:tuple/tuple.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:string_similarity/string_similarity.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Local
+import 'package:japanese_word_bank/config.dart';
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 import 'package:japanese_word_bank/classes/sense.dart';
 import 'package:japanese_word_bank/classes/term_entry.dart';
@@ -37,10 +39,15 @@ class DictDatabaseHelper {
   Future<Database> _initDatabase() async {
 
     final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/jmedict.db';
+    final path = '${directory.path}/${AppConfig.dictionaryDBName}';
 
-    if (!await databaseExists(path)) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int installedDBVersion = prefs.getInt('db_version') ?? 0;
+
+    // If the database doesn't exist or the installed version is older than the current version it copies the new one.
+    if (!await databaseExists(path) || installedDBVersion < AppConfig.currentDBVersion) {
       await _copyDatabaseFromAssets(path);
+      await prefs.setInt('db_version', AppConfig.currentDBVersion);
     }
     return await openDatabase(path);
   }
