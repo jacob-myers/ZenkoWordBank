@@ -42,6 +42,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Other types
+*.lnk
+
 # Local references
 TODO.txt
 /python-romkan-ng-0.3.0
