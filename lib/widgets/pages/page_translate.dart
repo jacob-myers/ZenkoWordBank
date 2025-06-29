@@ -8,6 +8,7 @@ import 'package:japanese_word_bank/widgets/translate_card.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
+import 'package:translator/translator.dart';
 
 class PageTranslate extends StatefulWidget {
   TextEditingController controller;
@@ -30,6 +31,7 @@ class PageTranslate extends StatefulWidget {
 }
 
 class _PageTranslate extends State<PageTranslate> {
+  GoogleTranslator _gtranslator = GoogleTranslator();
   FocusNode translateEntryFocus = FocusNode();
   DateTime _mostRecentCall = DateTime.now();
 
@@ -55,6 +57,16 @@ class _PageTranslate extends State<PageTranslate> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        //Translation t = await _gtranslator.translate(en_term, from:'en', to:'ja');
+        FutureBuilder(
+          future: _gtranslator.translate(widget.controller.text, from: 'en', to: 'ja'),
+          builder: (BuildContext context, AsyncSnapshot<Translation> snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            return TranslateCard(en: snapshot.data!.source, reading: snapshot.data!.text, romaji: "test");
+          }
+        ),
         Expanded(
           // Listener ensures if list is interacted with, it unfocuses the text field.
           child: Listener(
@@ -67,7 +79,10 @@ class _PageTranslate extends State<PageTranslate> {
               ListView(
                 children: List.generate(widget.translationResults.length, (i) {
                   return TranslateCard(
-                    term: widget.translationResults[i]
+                    en: widget.translationResults[i].en_term,
+                    kanji: widget.translationResults[i].k_term,
+                    reading: widget.translationResults[i].reading,
+                    romaji: widget.translationResults[i].romaji,
                   );
                 }),
               )

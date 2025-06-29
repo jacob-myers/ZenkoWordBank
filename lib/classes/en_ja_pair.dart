@@ -8,6 +8,7 @@ class EnJaPair {
   String? k_term;
   String reading;
   List<Sense> en_senses;
+  bool? isGoogle;
 
   static const _kanaKit = KanaKit();
 

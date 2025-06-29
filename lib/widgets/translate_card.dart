@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 
@@ -9,11 +11,17 @@ import 'package:japanese_word_bank/widgets/term_editor.dart';
 import 'package:japanese_word_bank/themes.dart';
 
 class TranslateCard extends StatefulWidget {
-  final EnJaPair term;
+  final String en;
+  final String? kanji;
+  final String reading;
+  final String romaji;
 
   TranslateCard({
     super.key,
-    required this.term,
+    required this.en,
+    required this.reading,
+    required this.romaji,
+    this.kanji,
   });
 
   @override
@@ -42,12 +50,14 @@ class _TranslateCard extends State<TranslateCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      widget.term.en_term.length > maxTextLen ? "${widget.term.en_term.substring(0, maxTextLen)}..." : widget.term.en_term,
-                      style: JWBTextStyles.translateResultEn
+                    widget.en.length > maxTextLen ? "${widget.en.substring(0, maxTextLen)}..." : widget.en,
+                    style: JWBTextStyles.translateResultEn
                   ),
-                  Text(widget.term.ja_term, style: JWBTextStyles.translateResultMain),
-                  widget.term.k_term != null ? Text(widget.term.reading, style: JWBTextStyles.termReading) : Container(),
-                  Text(widget.term.romaji, style: JWBTextStyles.termRomaji),
+                  widget.kanji != null ?
+                    Text(widget.kanji!, style: JWBTextStyles.translateResultMain) :
+                    Text(widget.reading, style: JWBTextStyles.translateResultMain),
+                  widget.kanji != null ? Text(widget.reading, style: JWBTextStyles.termReading) : Container(),
+                  Text(widget.romaji, style: JWBTextStyles.termRomaji),
                 ],
               ),
             ),
@@ -65,7 +75,7 @@ class _TranslateCard extends State<TranslateCard> {
                       builder: (context) {
                         return  Dialog.fullscreen(
                           child: TermEditor(
-                            term: TermEntry.fromEnJaPair(widget.term),
+                            term: TermEntry(en_term: widget.en, k_term: widget.kanji, reading: widget.reading),
                             onClose: () {
                               setState(() {});
                             }
