@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:japanese_word_bank/classes/jisho_pair.dart';
-//import 'package:async/async.dart';
-import 'dart:convert';
-import 'package:string_similarity/string_similarity.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
+import 'package:japanese_word_bank/classes/jisho_pair.dart';
 import 'package:japanese_word_bank/functions/translate.dart';
+import 'package:japanese_word_bank/functions/parse_jisho_response.dart';
 import 'package:japanese_word_bank/widgets/translate_card.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
-
-import '../../classes/sense.dart';
 
 class PageTranslate extends StatefulWidget {
   TextEditingController controller;
@@ -47,26 +43,9 @@ class _PageTranslate extends State<PageTranslate> {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final List results = data['data'];
-
-        final top = results[0];
-        String? kanji = top['japanese'][0]['word'];
-        String reading = top['japanese'][0]['reading'];
-
-        final sense = (top['senses'] as List).reduce((a, b) =>
-          a['english_definitions'].toString().similarityTo(en) > b['english_definitions'].toString().similarityTo(en) ?
-          a : b);
-        final english = sense['english_definitions'].join(' / ');
-        final part = (sense['parts_of_speech'] as List).join(' / ');
-
-        jishoResults = JishoPair(k_term: kanji, reading: reading, en_term: english, part: part);
-
-        setState(() {});
-
-        print(kanji);
-        print(reading);
-        print(sense);
+        setState(() {
+          jishoResults = parse_jisho_response(response, en);
+        });
       }
     }
   }

@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/term_entry.dart';
