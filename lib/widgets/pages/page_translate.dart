@@ -8,7 +8,6 @@ import 'package:japanese_word_bank/widgets/translate_card.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
-import 'package:translator/translator.dart';
 
 class PageTranslate extends StatefulWidget {
   TextEditingController controller;
