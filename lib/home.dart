@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
+import 'package:japanese_word_bank/classes/jisho_pair.dart';
 
 import 'package:japanese_word_bank/widgets/pages/page_home.dart';
 import 'package:japanese_word_bank/widgets/pages/page_translate.dart';
@@ -28,6 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<EnJaPair> translationResults = [];
   final List<bool> selectedSort = [true, false, false, false];
   bool translatorEnToJa = true;
+  JishoPair? jishoResults;
 
   int _selectedIndex = 1;
   void _onNavbarItemTapped (int index) {
@@ -84,6 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 setTranslationResults: (List<EnJaPair> res) {
                   setState(() {
                     translationResults = res;
+                  });
+                },
+                jishoResults: jishoResults,
+                setJishoPair: (JishoPair newJishoPair) {
+                  setState(() {
+                    jishoResults = newJishoPair;
                   });
                 },
               )

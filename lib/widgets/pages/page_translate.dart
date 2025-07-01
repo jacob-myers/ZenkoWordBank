@@ -17,6 +17,8 @@ class PageTranslate extends StatefulWidget {
   Function(List<EnJaPair>) setTranslationResults;
   bool enToJa;
   Function(bool) setEnToJa;
+  JishoPair? jishoResults;
+  Function(JishoPair) setJishoPair;
 
   PageTranslate({
     super.key,
@@ -25,6 +27,8 @@ class PageTranslate extends StatefulWidget {
     required this.setTranslationResults,
     required this.enToJa,
     required this.setEnToJa,
+    this.jishoResults,
+    required this.setJishoPair
   });
 
   @override
@@ -34,7 +38,6 @@ class PageTranslate extends StatefulWidget {
 class _PageTranslate extends State<PageTranslate> {
   FocusNode translateEntryFocus = FocusNode();
   DateTime _mostRecentCall = DateTime.now();
-  JishoPair? jishoResults;
 
   Future<void> _jishoEntoJa(String en, DateTime stamp) async {
     await Future.delayed(const Duration(milliseconds: 500));
@@ -43,9 +46,7 @@ class _PageTranslate extends State<PageTranslate> {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        setState(() {
-          jishoResults = parse_jisho_response(response, en);
-        });
+        widget.setJishoPair(parse_jisho_response(response, en));
       }
     }
   }
@@ -83,13 +84,13 @@ class _PageTranslate extends State<PageTranslate> {
             child: widget.translationResults.isEmpty ? Container() :
               ListView(
                 children: <Widget>[
-                  jishoResults != null ? TranslateCard(
+                  widget.jishoResults != null ? TranslateCard(
                     title: 'Jisho Results',
                     cardColor: JWBColors.translateResultBackgroundJisho,
-                    en: jishoResults!.en_term,
-                    kanji: jishoResults!.k_term,
-                    reading: jishoResults!.reading,
-                    romaji: jishoResults!.romaji,
+                    en: widget.jishoResults!.en_term,
+                    kanji: widget.jishoResults!.k_term,
+                    reading: widget.jishoResults!.reading,
+                    romaji: widget.jishoResults!.romaji,
                   ) : Container()
                 ] + List.generate(widget.translationResults.length, (i) {
                   return TranslateCard(
