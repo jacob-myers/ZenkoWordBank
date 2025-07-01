@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:async/async.dart';
+import 'package:http/http.dart' as http;
+import 'package:japanese_word_bank/classes/jisho_pair.dart';
+//import 'package:async/async.dart';
+import 'dart:convert';
+import 'package:string_similarity/string_similarity.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
@@ -8,6 +12,8 @@ import 'package:japanese_word_bank/widgets/translate_card.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
+
+import '../../classes/sense.dart';
 
 class PageTranslate extends StatefulWidget {
   TextEditingController controller;
@@ -32,6 +38,38 @@ class PageTranslate extends StatefulWidget {
 class _PageTranslate extends State<PageTranslate> {
   FocusNode translateEntryFocus = FocusNode();
   DateTime _mostRecentCall = DateTime.now();
+  JishoPair? jishoResults;
+
+  Future<void> _jishoEntoJa(String en, DateTime stamp) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (stamp == _mostRecentCall) {
+      final url = Uri.parse('https://jisho.org/api/v1/search/words?keyword=$en');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List results = data['data'];
+
+        final top = results[0];
+        String? kanji = top['japanese'][0]['word'];
+        String reading = top['japanese'][0]['reading'];
+
+        final sense = (top['senses'] as List).reduce((a, b) =>
+          a['english_definitions'].toString().similarityTo(en) > b['english_definitions'].toString().similarityTo(en) ?
+          a : b);
+        final english = sense['english_definitions'].join(' / ');
+        final part = (sense['parts_of_speech'] as List).join(' / ');
+
+        jishoResults = JishoPair(k_term: kanji, reading: reading, en_term: english, part: part);
+
+        setState(() {});
+
+        print(kanji);
+        print(reading);
+        print(sense);
+      }
+    }
+  }
 
   Future<void> _translateFromEn(String en, DateTime stamp) async {
     await Future.delayed(const Duration(milliseconds: 250));
@@ -65,7 +103,16 @@ class _PageTranslate extends State<PageTranslate> {
             // Translation result cards.
             child: widget.translationResults.isEmpty ? Container() :
               ListView(
-                children: List.generate(widget.translationResults.length, (i) {
+                children: <Widget>[
+                  jishoResults != null ? TranslateCard(
+                    title: 'Jisho Results',
+                    cardColor: JWBColors.translateResultBackgroundJisho,
+                    en: jishoResults!.en_term,
+                    kanji: jishoResults!.k_term,
+                    reading: jishoResults!.reading,
+                    romaji: jishoResults!.romaji,
+                  ) : Container()
+                ] + List.generate(widget.translationResults.length, (i) {
                   return TranslateCard(
                     en: widget.translationResults[i].en_term,
                     kanji: widget.translationResults[i].k_term,
@@ -118,6 +165,7 @@ class _PageTranslate extends State<PageTranslate> {
                   _mostRecentCall = DateTime.now();
                   if (widget.enToJa) {
                     _translateFromEn(val, _mostRecentCall);
+                    _jishoEntoJa(val, _mostRecentCall);
                   } else {
                     _translateFromJa(val, _mostRecentCall);
                   }

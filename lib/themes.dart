@@ -37,6 +37,7 @@ class JWBColors {
   static const autotranslateDisabledBG = Color(0xFF232323);
 
   static const translateResultBackground = Color(0xFF676767);
+  static const translateResultBackgroundJisho = Color(0xFF57A82E);
 
   static const sortButtonsSelected = Color(0xFFFFFFFF);
   static const sortButtonsUnSelected = Color(0xFFA8A8A8);
@@ -113,6 +114,10 @@ class JWBTextStyles {
     fontSize: 16
   );
 
+  static const translateResultTitle = TextStyle(
+    color: JWBColors.entryTextMain,
+    fontSize: 14
+  );
   static const translateResultEn = TextStyle(
     color: JWBColors.entryTextMain,
     fontSize: 14
