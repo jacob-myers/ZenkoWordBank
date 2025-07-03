@@ -18,7 +18,7 @@ class PageTranslate extends StatefulWidget {
   bool enToJa;
   Function(bool) setEnToJa;
   JishoPair? jishoResults;
-  Function(JishoPair) setJishoPair;
+  Function(JishoPair?) setJishoPair;
 
   PageTranslate({
     super.key,
@@ -39,14 +39,15 @@ class _PageTranslate extends State<PageTranslate> {
   FocusNode translateEntryFocus = FocusNode();
   DateTime _mostRecentCall = DateTime.now();
 
-  Future<void> _jishoEntoJa(String en, DateTime stamp) async {
+  Future<void> _jishoTranslate(String term, DateTime stamp) async {
+    widget.setJishoPair(null);
     await Future.delayed(const Duration(milliseconds: 500));
     if (stamp == _mostRecentCall) {
-      final url = Uri.parse('https://jisho.org/api/v1/search/words?keyword=$en');
+      final url = Uri.parse('https://jisho.org/api/v1/search/words?keyword=$term');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        widget.setJishoPair(parse_jisho_response(response, en));
+        widget.setJishoPair(parse_jisho_response(response, term));
       }
     }
   }
@@ -145,9 +146,10 @@ class _PageTranslate extends State<PageTranslate> {
                   _mostRecentCall = DateTime.now();
                   if (widget.enToJa) {
                     _translateFromEn(val, _mostRecentCall);
-                    _jishoEntoJa(val, _mostRecentCall);
+                    _jishoTranslate(val, _mostRecentCall);
                   } else {
                     _translateFromJa(val, _mostRecentCall);
+                    _jishoTranslate(val, _mostRecentCall);
                   }
                 },
               ),

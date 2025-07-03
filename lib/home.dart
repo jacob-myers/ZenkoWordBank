@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 jishoResults: jishoResults,
-                setJishoPair: (JishoPair newJishoPair) {
+                setJishoPair: (JishoPair? newJishoPair) {
                   setState(() {
                     jishoResults = newJishoPair;
                   });
