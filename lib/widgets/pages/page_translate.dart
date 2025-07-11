@@ -146,11 +146,10 @@ class _PageTranslate extends State<PageTranslate> {
                   _mostRecentCall = DateTime.now();
                   if (widget.enToJa) {
                     _translateFromEn(val, _mostRecentCall);
-                    _jishoTranslate(val, _mostRecentCall);
                   } else {
                     _translateFromJa(val, _mostRecentCall);
-                    _jishoTranslate(val, _mostRecentCall);
                   }
+                  _jishoTranslate(val, _mostRecentCall);
                 },
               ),
               Row(

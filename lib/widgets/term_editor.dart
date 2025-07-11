@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:async/async.dart';
+import 'package:http/http.dart' as http;
 import 'package:kana_kit/kana_kit.dart';
 
 // Local
 import 'package:japanese_word_bank/classes/en_ja_pair.dart';
 import 'package:japanese_word_bank/classes/term_entry.dart';
+import 'package:japanese_word_bank/classes/jisho_pair.dart';
 import 'package:japanese_word_bank/functions/translate.dart';
 import 'package:japanese_word_bank/functions/persistence.dart';
+import 'package:japanese_word_bank/functions/parse_jisho_response.dart';
 
 // Styles
 import 'package:japanese_word_bank/themes.dart';
@@ -34,6 +36,7 @@ class _TermEditor extends State<TermEditor> {
   DateTime _mostRecentCall = DateTime.now();
 
   List<EnJaPair> ja_translations = [];
+  JishoPair? jishoResults;
 
   final TextEditingController _englishController = TextEditingController();
   final TextEditingController _dropdownController = TextEditingController();
@@ -81,6 +84,23 @@ class _TermEditor extends State<TermEditor> {
         TextPosition(offset: pair.reading.length),
       ),
     );
+  }
+
+  Future<void> _jishoTranslate(String value, DateTime stamp) async {
+    jishoResults = null;
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (stamp == _mostRecentCall) {
+      final url = Uri.parse('https://jisho.org/api/v1/search/words?keyword=$value');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        setState(() {
+          jishoResults = parse_jisho_response(response, value);
+          _dropdownController.value = TextEditingValue(text: jishoResults!.ja_term);
+          updateReading(jishoResults!.asEnJa);
+        });
+      }
+    }
   }
 
   void _translateFrom(String value, DateTime stamp) async {
@@ -179,6 +199,7 @@ class _TermEditor extends State<TermEditor> {
                       if (_autotranslate) {
                         _mostRecentCall = DateTime.now();
                         _translateFrom(value, _mostRecentCall);
+                        _jishoTranslate(value, _mostRecentCall);
                       }
                     },
                   ),
@@ -220,12 +241,13 @@ class _TermEditor extends State<TermEditor> {
 
           DropdownMenu(
             controller: _dropdownController,
-            initialSelection: ja_translations.firstOrNull,
+            //initialSelection: ja_translations.firstOrNull,
             menuHeight: 220,
             expandedInsets: EdgeInsets.zero,
             requestFocusOnTap: true,
             textStyle: JWBTextStyles.newTermJap,
-            dropdownMenuEntries: ja_translations.map((EnJaPair pair) {
+            dropdownMenuEntries: ((jishoResults != null ? <EnJaPair>[jishoResults!.asEnJa] : <EnJaPair>[]) + ja_translations)
+                .map((EnJaPair pair) {
               return DropdownMenuEntry<EnJaPair>(
                 value: pair,
                 label: pair.ja_term,
